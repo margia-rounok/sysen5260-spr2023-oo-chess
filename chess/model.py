@@ -29,6 +29,9 @@ class Piece:
     
     def valid_moves(self, moves:str) -> list:
         return []
+    
+    def check_path(self, source: str, dest: str) -> bool:
+        return False
 
 
 class Pawn(Piece):
@@ -46,7 +49,10 @@ class Pawn(Piece):
     
     def valid_moves(self, moves:str) -> list:
         return ['TODO']
-
+    
+    def get_path(self, source: str, dest: str) -> list:
+        return [] #TODO
+    
 class Bischop(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
@@ -88,7 +94,28 @@ class Bischop(Piece):
             moves.append(x + str(y))
 
         return moves
+    
+    def get_path(self, source: str, dest: str) -> list:
+        src_x, src_y = ord(source[0]) - 96, int(source[1])
+        dest_x, dest_y = ord(dest[0]) - 96, int(dest[1])
 
+        # check if the move is valid
+        if abs(src_x - dest_x) != abs(src_y - dest_y):
+            return []
+
+        # get the direction of the move
+        x_dir = 1 if src_x < dest_x else -1
+        y_dir = 1 if src_y < dest_y else -1
+
+        empty_positions = []
+        x, y = src_x + x_dir, src_y + y_dir
+        while x != dest_x and y != dest_y:
+            empty_positions.append(chr(x + 96) + str(y))
+            x += x_dir
+            y += y_dir
+
+        return empty_positions
+    
 class Rook(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
@@ -117,6 +144,32 @@ class Rook(Piece):
                 moves.append(x + str(j))
         
         return moves
+    
+    def get_path(self, source: str, dest: str) -> list:
+        src_x, src_y = ord(source[0]), int(source[1])
+        dest_x, dest_y = ord(dest[0]), int(dest[1])
+
+        positions = []
+    
+        # Check if rook is moving along the x-axis
+        if src_x != dest_x and src_y == dest_y:
+            if dest_x > src_x:
+                positions = [(chr(i) + str(src_y)) for i in range(src_x+1, dest_x)]
+            else:
+                positions = [(chr(i) + str(src_y)) for i in range(dest_x+1, src_x)]
+        
+        # Check if rook is moving along the y-axis
+        elif src_x == dest_x and src_y != dest_y:
+            if dest_y > src_y:
+                positions = [(src[0] + str(j)) for j in range(src_y+1, dest_y)]
+            else:
+                positions = [(src[0] + str(j)) for j in range(dest_y+1, src_y)]
+        
+        else:
+            # Invalid move for a rook
+            return []
+        
+        return positions
 
 class Queen(Piece):
     def __init__(self, is_white: bool) -> None:
@@ -154,6 +207,37 @@ class Queen(Piece):
 
         # Combine all valid positions and return the result
         return list(set(x_positions + y_positions + diagonal_positions))
+    
+    def get_path(self, source: str, dest: str) -> list:
+        start_x, start_y = source[0], int(source[1])
+        dest_x, dest_y = dest[0], int(dest[1])
+
+        # Check if the move is valid
+        if start_x == dest_x or start_y == dest_y or abs(ord(start_x) - ord(dest_x)) == abs(start_y - dest_y):
+            # Generate a list of all positions that need to be empty
+            empty_positions = []
+            if start_x == dest_x:
+                # The move is vertical, so iterate over the y-axis
+                for i in range(min(start_y, dest_y) + 1, max(start_y, dest_y)):
+                    empty_positions.append(start_x + str(i))
+            elif start_y == dest_y:
+                # The move is horizontal, so iterate over the x-axis
+                for i in range(ord(min(start_x, dest_x)) + 1, ord(max(start_x, dest_x))):
+                    empty_positions.append(chr(i) + str(start_y))
+            else:
+                # The move is diagonal, so iterate over the diagonal
+                x_direction = -1 if start_x > dest_x else 1
+                y_direction = -1 if start_y > dest_y else 1
+                x, y = ord(start_x) + x_direction, start_y + y_direction
+                while x != ord(dest_x) and y != dest_y:
+                    empty_positions.append(chr(x) + str(y))
+                    x += x_direction
+                    y += y_direction
+            return empty_positions
+        else:
+            # The move is not valid, so return an empty list
+            return []
+
 
 class Knight(Piece):
     def __init__(self, is_white: bool) -> None:
@@ -177,6 +261,9 @@ class Knight(Piece):
             if 97 <= new_x <= 104 and 1 <= new_y <= 8:
                 moves.append(chr(new_x) + str(new_y))
         return moves
+    
+    def get_path(self, source: str, dest: str) -> list:
+        return []
 
 
 class Game:
@@ -225,14 +312,27 @@ class Game:
         return dest_piece is None or \
         dest_piece._is_white == self.white_to_play 
 
+    def check_no_path_override(self, pos_lst):
+        full = False
+        for pos in pos_lst:
+            if self.board.get(pos) is not None:
+                full = True
+                break
+        return full
+
     def check_piece(self,move, id):
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
         source_piece = self.get_source_piece(source)
         if source_piece.type_enum() == id and \
             dest in source_piece.valid_moves(source): #get correct moves per id/enum/type
-                self.accept_move(move)
-                return True
+                path = source_piece.get_path(source, dest) #get the necessary empty path for everything but queen
+                if id in [2,3,4] and self.check_no_path_override(path): #then check if path is unobstructed
+                    self.accept_move(move) #finally move
+                    return True
+                if id == 5:
+                    self.accept_move(move) #knight can move
+                    return True
         return False
 
     def accept_move(self, move):
