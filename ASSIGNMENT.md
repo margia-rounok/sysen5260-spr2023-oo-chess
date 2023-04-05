@@ -27,7 +27,7 @@ As a player...
     * <strike> move my queen to any square not on its row, column, or diagonal. (done) </strike>
     * <strike> move my knight to any square not 3x2 squares aware. (done) </strike>
     *  <strike> move any piece other than a knight over existing pieces (path override). (tentatively done, check when pawn is implemented) </strike>
-    *<span style="background-color: #FFFF00"> move any piece to a square occupied by another of my pieces (dest override). (done) </span>
+    * <span style="background-color: #FFFF00"> move any piece to a square occupied by another of my pieces (dest override). (done) </span>
     * move my pawn in violation of pawn-movement rules.
     * move my king in violation of king-movement rules.
     * make a move that results in my king being in check.
