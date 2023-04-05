@@ -103,7 +103,19 @@ class Rook(Piece):
         return 3
 
     def valid_moves(self, position:str) -> list:
+        x, y = position[0], int(position[1])
         moves = []
+        
+        # Check all possible x-axis moves
+        for i in range(ord('a'), ord('i')):
+            if chr(i) != x:
+                moves.append(chr(i) + str(y))
+        
+        # Check all possible y-axis moves
+        for j in range(1, 9):
+            if j != y:
+                moves.append(x + str(j))
+        
         return moves
 
 class Game:
@@ -121,6 +133,11 @@ class Game:
 
     def get_source_piece(self, source: str):
         return self.board.get(source)
+    
+    def get_source_type(self, move:str):
+        source_pos = self.get_source_pos(move)
+        source_piece = self.get_source_piece(source_pos)
+        return source_piece.type_enum()
     
     def get_dest_pos(self, move: str) -> str:
         return move[2:]
@@ -155,6 +172,16 @@ class Game:
                 return True
         return False
 
+    def move_rook(self,move):
+        source = self.get_source_pos(move)
+        dest = self.get_dest_pos(move)
+        source_piece = self.get_source_piece(source)
+        if source_piece.type_enum() == 3 and \
+            dest in source_piece.valid_moves(source): #check that id is rook
+                self.accept_move(move)
+                return True
+        return False
+
     def accept_move(self, move):
         # TODO: Implement updating the board with the give move
         self.white_to_play = not self.white_to_play
@@ -163,6 +190,9 @@ class Game:
         #dest_piece = self.get_dest_piece(dest) #only important if dest_piece is king and captured
         source_piece = self.get_source_piece(source)
         if source_piece.type_enum() == 2:
+            self.board.set(source, None)
+            self.board.set(dest, source_piece)
+        elif source_piece.type_enum() == 3:
             self.board.set(source, None)
             self.board.set(dest, source_piece)
 
@@ -180,4 +210,9 @@ class Game:
         self.board.set('c8', Bischop(is_white=False))
         self.board.set('f8', Bischop(is_white=False))
 
+        #setting up rooks
+        self.board.set('a1', Rook(is_white=True))
+        self.board.set('h1', Rook(is_white=True))
+        self.board.set('a8', Rook(is_white=False))
+        self.board.set('h8', Rook(is_white=False))
 

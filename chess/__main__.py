@@ -17,8 +17,10 @@ while not game.game_over:
             print("ERROR: Improper source move. Please try again.")
         elif not game.check_no_piece_override(move):
             print("ERROR: Improper destination move. Please try again.")
-        elif not game.move_bischop(move):
+        elif game.get_source_type(move) == 2 and not game.move_bischop(move):
             print("ERROR: Improper destination move for bischop. Please try again.")
+        elif game.get_source_type(move) == 3 and not game.move_rook(move):
+            print("ERROR: Improper destination move for rook. Please try again.")
         else:
             break
         
