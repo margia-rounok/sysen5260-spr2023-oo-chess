@@ -25,6 +25,8 @@ while not game.game_over:
                 print("ERROR: Improper destination move for rook. Please try again.")
             elif source_type == 4 and not game.check_piece(move, source_type):
                 print("ERROR: Improper destination move for queen. Please try again.")
+            elif source_type == 5 and not game.check_piece(move, source_type):
+                print("ERROR: Improper destination move for knight. Please try again.")
             else:
                 break
         

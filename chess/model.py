@@ -155,6 +155,29 @@ class Queen(Piece):
         # Combine all valid positions and return the result
         return list(set(x_positions + y_positions + diagonal_positions))
 
+class Knight(Piece):
+    def __init__(self, is_white: bool) -> None:
+        super().__init__(is_white)
+
+    def __hash__(self):
+        super().__hash__()
+
+    def __eq__(self, other):
+        super().__eq__(other)
+
+    def type_enum(self) -> int:
+        return 5
+
+    def valid_moves(self, position:str) -> list:
+        x, y = position[0], int(position[1])
+        moves = []
+        for dx, dy in ((-2, -1), (-1, -2), (1, -2), (2, -1),
+                    (-2, 1), (-1, 2), (1, 2), (2, 1)):
+            new_x, new_y = ord(x) + dx, y + dy
+            if 97 <= new_x <= 104 and 1 <= new_y <= 8:
+                moves.append(chr(new_x) + str(new_y))
+        return moves
+
 
 class Game:
     def __init__(self):
@@ -207,7 +230,7 @@ class Game:
         dest = self.get_dest_pos(move)
         source_piece = self.get_source_piece(source)
         if source_piece.type_enum() == id and \
-            dest in source_piece.valid_moves(source): #check that id is bischop
+            dest in source_piece.valid_moves(source): #get correct moves per id/enum/type
                 self.accept_move(move)
                 return True
         return False
@@ -226,6 +249,9 @@ class Game:
             self.board.set(source, None)
             self.board.set(dest, source_piece)
         elif source_piece.type_enum() == 4:
+            self.board.set(source, None)
+            self.board.set(dest, source_piece)
+        elif source_piece.type_enum() == 5:
             self.board.set(source, None)
             self.board.set(dest, source_piece)
 
@@ -253,4 +279,11 @@ class Game:
         #setting up queen
         self.board.set('d1', Queen(is_white=True))
         self.board.set('d8', Queen(is_white=False))
+
+        # setting up knight
+        self.board.set('b1', Knight(is_white=True))
+        self.board.set('g1', Knight(is_white=True))
+        self.board.set('b8', Knight(is_white=False))
+        self.board.set('g8', Knight(is_white=False))
+
 
