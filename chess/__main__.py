@@ -19,13 +19,11 @@ while not game.game_over:
             print("ERROR: Improper destination move. Please try again.")
         else:
             source_type = game.get_source_type(move)
-            if source_type == 2 and not game.move_bischop(move):
+            if source_type == 2 and not game.check_piece(move, source_type):
                 print("ERROR: Improper destination move for bischop. Please try again.")
-                pass
-            elif source_type == 3 and not game.move_rook(move):
+            elif source_type == 3 and not game.check_piece(move, source_type):
                 print("ERROR: Improper destination move for rook. Please try again.")
-                pass
-            elif source_type == 4 and not game.move_queen(move):
+            elif source_type == 4 and not game.check_piece(move, source_type):
                 print("ERROR: Improper destination move for queen. Please try again.")
             else:
                 break

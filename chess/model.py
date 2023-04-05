@@ -174,9 +174,9 @@ class Game:
     
     def get_source_type(self, move:str):
         source_pos = self.get_source_pos(move)
-        print(source_pos)
+        # print(source_pos)
         source_piece = self.get_source_piece(source_pos)
-        print(source_piece.type_enum())
+        # print(source_piece.type_enum())
         return source_piece.type_enum()
     
     def get_dest_pos(self, move: str) -> str:
@@ -202,32 +202,12 @@ class Game:
         return dest_piece is None or \
         dest_piece._is_white == self.white_to_play 
 
-    def move_bischop(self,move):
+    def check_piece(self,move, id):
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
         source_piece = self.get_source_piece(source)
-        if source_piece.type_enum() == 2 and \
+        if source_piece.type_enum() == id and \
             dest in source_piece.valid_moves(source): #check that id is bischop
-                self.accept_move(move)
-                return True
-        return False
-
-    def move_rook(self,move):
-        source = self.get_source_pos(move)
-        dest = self.get_dest_pos(move)
-        source_piece = self.get_source_piece(source)
-        if source_piece.type_enum() == 3 and \
-            dest in source_piece.valid_moves(source): #check that id is rook
-                self.accept_move(move)
-                return True
-        return False
-
-    def move_queen(self,move):
-        source = self.get_source_pos(move)
-        dest = self.get_dest_pos(move)
-        source_piece = self.get_source_piece(source)
-        if source_piece.type_enum() == 4 and \
-            dest in source_piece.valid_moves(source): #check that id is rook
                 self.accept_move(move)
                 return True
         return False
