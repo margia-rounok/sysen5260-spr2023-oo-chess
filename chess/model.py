@@ -242,16 +242,10 @@ class Game:
         dest = self.get_dest_pos(move)
         #dest_piece = self.get_dest_piece(dest) #only important if dest_piece is king and captured
         source_piece = self.get_source_piece(source)
-        if source_piece.type_enum() == 2:
+        if source_piece.type_enum() in [2,3,4]:
             self.board.set(source, None)
             self.board.set(dest, source_piece)
-        elif source_piece.type_enum() == 3:
-            self.board.set(source, None)
-            self.board.set(dest, source_piece)
-        elif source_piece.type_enum() == 4:
-            self.board.set(source, None)
-            self.board.set(dest, source_piece)
-        elif source_piece.type_enum() == 5:
+        elif source_piece.type_enum() == 5: #knight
             self.board.set(source, None)
             self.board.set(dest, source_piece)
 
