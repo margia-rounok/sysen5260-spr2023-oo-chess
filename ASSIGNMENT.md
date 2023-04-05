@@ -30,7 +30,7 @@ As a player...
     * <strike> move any piece to a square occupied by another of my pieces. (done)  </strike>
     * move my pawn in violation of pawn-movement rules.
     * move my king in violation of king-movement rules.
-    * make a move that results in my king being in check. (done)
+    * make a move that results in my king being in check.
     * make any other moves prohibited by [movement rules](https://en.wikipedia.org/wiki/Rules_of_chess#Movement)
 * I want to move my king two squares towards my rook and see the rook also moved to complete a castle.
 * I want to receive an error if any of the castling conditions don't hold.
