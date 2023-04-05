@@ -19,8 +19,9 @@ As a player...
 * I want to enter a move like 'e2e4' and see the piece at e2 moved to e4.
 * I want to receive an error if I try to... 
     * enter an ill-formatted move -- i.e. anything not of the form `[a..h][1..8][a..h][1..8]`.
-    * move a non-existent piece. 
-    * move my opponent's piece.
+    (done)
+    * move a non-existent piece. (done)
+    * move my opponent's piece. (done)
     * move my bischop to any square not on its diagonal.
     * move my rook to any square not on its row or column.
     * move my queen to any square not on its row, column, or diagonal.
@@ -29,7 +30,7 @@ As a player...
     * move any piece to a square occupied by another of my pieces.
     * move my pawn in violation of pawn-movement rules.
     * move my king in violation of king-movement rules.
-    * make a move that results in my king being in check.
+    * make a move that results in my king being in check. (done)
     * make any other moves prohibited by [movement rules](https://en.wikipedia.org/wiki/Rules_of_chess#Movement)
 * I want to move my king two squares towards my rook and see the rook also moved to complete a castle.
 * I want to receive an error if any of the castling conditions don't hold.
