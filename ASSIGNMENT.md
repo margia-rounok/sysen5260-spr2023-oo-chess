@@ -18,8 +18,8 @@ You'll need to implement the following user-stories:
 As a player...
 * I want to enter a move like 'e2e4' and see the piece at e2 moved to e4.
 * I want to receive an error if I try to... 
-    * enter an ill-formatted move -- i.e. anything not of the form `[a..h][1..8][a..h][1..8]`.
-    (done)
+    *  <strike> enter an ill-formatted move -- i.e. anything not of the form `[a..h][1..8][a..h][1..8]`.
+    (done)  </strike>
     * <strike> move a non-existent piece. (done) </strike>
     * <strike> move my opponent's piece. (done) </strike>
     * <strike> move my bischop to any square not on its diagonal. (done) </strike>

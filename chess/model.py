@@ -89,6 +89,22 @@ class Bischop(Piece):
 
         return moves
 
+class Rook(Piece):
+    def __init__(self, is_white: bool) -> None:
+        super().__init__(is_white)
+
+    def __hash__(self):
+        super().__hash__()
+
+    def __eq__(self, other):
+        super().__eq__(other)
+
+    def type_enum(self) -> int:
+        return 3
+
+    def valid_moves(self, position:str) -> list:
+        moves = []
+        return moves
 
 class Game:
     def __init__(self):
