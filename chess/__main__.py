@@ -17,17 +17,11 @@ while not game.game_over:
             print("ERROR: Improper source move. Please try again.")
         elif not game.check_no_piece_override(move):
             print("ERROR: Improper destination move. Please try again.")
+        elif not game.move_bischop(move):
+            print("ERROR: Improper destination move for bischop. Please try again.")
         else:
             break
         
-        # if game.check_input(move) is not None and not game.check_moved_op(move): #valid move
-        #     # and not game.check_move_exist(move)
-        #     # print("here")
-        #     break
-        # elif not game.check_no_piece_override(move):
-        #     print("ERROR: Improper destination move. Please try again.")
-        # else:
-        #      print("ERROR: Improper source move. Please try again.")
     # prompt = "White to play:" if game.white_to_play else "Black to play:"
     # move = input(prompt)
-    game.accept_move(move)
+    # game.accept_move(move)
