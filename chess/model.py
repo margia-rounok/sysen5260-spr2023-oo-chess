@@ -118,6 +118,44 @@ class Rook(Piece):
         
         return moves
 
+class Queen(Piece):
+    def __init__(self, is_white: bool) -> None:
+        super().__init__(is_white)
+
+    def __hash__(self):
+        super().__hash__()
+
+    def __eq__(self, other):
+        super().__eq__(other)
+
+    def type_enum(self) -> int:
+        return 4
+
+    def valid_moves(self, position:str) -> list:
+        x, y = position[0], int(position[1])
+
+        # Generate all valid positions on the x-axis
+        x_positions = [chr(i) + str(y) for i in range(ord('a'), ord('i'))]
+
+        # Generate all valid positions on the y-axis
+        y_positions = [x + str(i) for i in range(1, 9)]
+
+        # Generate all valid positions on the diagonal
+        diagonal_positions = []
+        for i in range(1, 9):
+            if ord(x) + i <= ord('h') and y + i <= 8:
+                diagonal_positions.append(chr(ord(x) + i) + str(y + i))
+            if ord(x) - i >= ord('a') and y - i >= 1:
+                diagonal_positions.append(chr(ord(x) - i) + str(y - i))
+            if ord(x) + i <= ord('h') and y - i >= 1:
+                diagonal_positions.append(chr(ord(x) + i) + str(y - i))
+            if ord(x) - i >= ord('a') and y + i <= 8:
+                diagonal_positions.append(chr(ord(x) - i) + str(y + i))
+
+        # Combine all valid positions and return the result
+        return list(set(x_positions + y_positions + diagonal_positions))
+
+
 class Game:
     def __init__(self):
         self.board = Board()
@@ -136,7 +174,9 @@ class Game:
     
     def get_source_type(self, move:str):
         source_pos = self.get_source_pos(move)
+        print(source_pos)
         source_piece = self.get_source_piece(source_pos)
+        print(source_piece.type_enum())
         return source_piece.type_enum()
     
     def get_dest_pos(self, move: str) -> str:
@@ -182,6 +222,16 @@ class Game:
                 return True
         return False
 
+    def move_queen(self,move):
+        source = self.get_source_pos(move)
+        dest = self.get_dest_pos(move)
+        source_piece = self.get_source_piece(source)
+        if source_piece.type_enum() == 4 and \
+            dest in source_piece.valid_moves(source): #check that id is rook
+                self.accept_move(move)
+                return True
+        return False
+
     def accept_move(self, move):
         # TODO: Implement updating the board with the give move
         self.white_to_play = not self.white_to_play
@@ -195,12 +245,16 @@ class Game:
         elif source_piece.type_enum() == 3:
             self.board.set(source, None)
             self.board.set(dest, source_piece)
+        elif source_piece.type_enum() == 4:
+            self.board.set(source, None)
+            self.board.set(dest, source_piece)
 
         
     def set_up_pieces(self):
         """Place pieces on the board as per the initial setup."""
         # empty is white and filled is black
         for col in 'abcdefgh':
+            #set up pawns
             self.board.set(f'{col}2', Pawn(is_white=True))
             self.board.set(f'{col}7', Pawn(is_white=False))
         
@@ -215,4 +269,8 @@ class Game:
         self.board.set('h1', Rook(is_white=True))
         self.board.set('a8', Rook(is_white=False))
         self.board.set('h8', Rook(is_white=False))
+
+        #setting up queen
+        self.board.set('d1', Queen(is_white=True))
+        self.board.set('d8', Queen(is_white=False))
 

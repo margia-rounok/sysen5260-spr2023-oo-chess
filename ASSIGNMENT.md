@@ -24,7 +24,7 @@ As a player...
     * <strike> move my opponent's piece. (done) </strike>
     * <strike> move my bischop to any square not on its diagonal. (done) </strike>
     * <strike> move my rook to any square not on its row or column. </strike>
-    * move my queen to any square not on its row, column, or diagonal.
+    * <strike> move my queen to any square not on its row, column, or diagonal. (done) </strike>
     * move my knight to any square not 3x2 squares aware.
     * move any piece other than a knight over existing pieces.
     * <strike> move any piece to a square occupied by another of my pieces. (done)  </strike>
