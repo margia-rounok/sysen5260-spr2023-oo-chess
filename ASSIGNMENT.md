@@ -20,7 +20,7 @@ As a player...
 * I want to receive an error if I try to... 
     * enter an ill-formatted move -- i.e. anything not of the form `[a..h][1..8][a..h][1..8]`.
     (done)
-    * ~~ move a non-existent piece. (done) ~~
+    * <strike> move a non-existent piece. (done) </strike>
     * ~~ move my opponent's piece. (done) ~~
     * move my bischop to any square not on its diagonal.
     * move my rook to any square not on its row or column.
