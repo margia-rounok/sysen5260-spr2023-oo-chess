@@ -19,13 +19,17 @@ while not game.game_over:
             print("ERROR: Improper destination move. Please try again.")
         else:
             source_type = game.get_source_type(move)
-            if source_type == 2 and not game.check_piece(move, source_type):
-                print("ERROR: Improper destination move for bischop. Please try again.")
-            elif source_type == 3 and not game.check_piece(move, source_type):
-                print("ERROR: Improper destination move for rook. Please try again.")
-            elif source_type == 4 and not game.check_piece(move, source_type):
-                print("ERROR: Improper destination move for queen. Please try again.")
-            elif source_type == 5 and not game.check_piece(move, source_type):
+            if source_type == 2 and (game.check_no_piece_override(move) or \
+                not game.check_piece(move, source_type)):
+                    print("ERROR: Improper destination move for bischop. Please try again.")
+            elif source_type == 3 and (game.check_no_piece_override(move) \
+                or not game.check_piece(move, source_type)):
+                    print("ERROR: Improper destination move for rook. Please try again.")
+            elif source_type == 4 and (game.check_no_piece_override(move) \
+                or not game.check_piece(move, source_type)):
+                    print("ERROR: Improper destination move for queen. Please try again.")
+            elif source_type == 5 and not game.check_piece(move, source_type): 
+                #knight does not need to check for override per game rules
                 print("ERROR: Improper destination move for knight. Please try again.")
             else:
                 break
