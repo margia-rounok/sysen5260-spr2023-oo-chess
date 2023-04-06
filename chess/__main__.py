@@ -37,7 +37,6 @@ while not game.game_over:
                 print("ERROR: Improper destination move for knight. Please try again.")
             else:
                 print("in else")
-                # game.check_piece(move, source_type)
                 break
         
     # prompt = "White to play:" if game.white_to_play else "Black to play:"
