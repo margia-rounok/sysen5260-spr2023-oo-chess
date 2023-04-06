@@ -215,9 +215,9 @@ class Rook(Piece):
         # Check if rook is moving along the y-axis
         elif src_x == dest_x and src_y != dest_y:
             if dest_y > src_y:
-                positions = [(src[0] + str(j)) for j in range(src_y+1, dest_y)]
+                positions = [(source[0] + str(j)) for j in range(src_y+1, dest_y)]
             else:
-                positions = [(src[0] + str(j)) for j in range(dest_y+1, src_y)]
+                positions = [(source[0] + str(j)) for j in range(dest_y+1, src_y)]
         
         else:
             # Invalid move for a rook
@@ -360,18 +360,30 @@ class Game:
     #     source_piece = self.board.get(source)
     #     return source_piece is None
 
+    # def check_piece_override_pawn(self,move):
+    #     #true if override, false ow
+    #     dest = self.get_dest_pos(move)
+    #     dest_piece = self.get_dest_piece(dest)
+    #     return dest_piece is None or \
+    #     dest_piece._is_white == self.white_to_play 
+
     def check_no_piece_override(self,move):
+        # true if no override
         dest = self.get_dest_pos(move)
         dest_piece = self.get_dest_piece(dest)
+        print(dest_piece is None)
+        print(self.white_to_play)
         return dest_piece is None or \
-        dest_piece._is_white == self.white_to_play 
+        dest_piece._is_white != self.white_to_play 
 
     def check_no_path_override(self, pos_lst):
         full = False
         for pos in pos_lst:
-            if self.board.get(pos) is not None:
-                full = True
-                break
+            pos_piece = self.board.get(pos)
+            if self.board.get(pos) is not None and \
+                self.white_to_play == pos_piece._is_white:
+                    full = True
+                    break
         return full
 
     def check_piece(self,move, id):

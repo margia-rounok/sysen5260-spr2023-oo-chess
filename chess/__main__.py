@@ -1,6 +1,7 @@
 import chess.model as model
 import chess.view as view
 
+#TODO move none type 
 game = model.Game()
 game.set_up_pieces()
 while not game.game_over:
@@ -21,14 +22,17 @@ while not game.game_over:
             source_type = game.get_source_type(move)
             if source_type == 1 and (not game.check_no_piece_override(move) or \
                 not game.check_piece(move, source_type)):
+                    print("\n pawn")
+                    print("pawn line 26" + str(not game.check_no_piece_override(move)))
+                    print("pawn line 27)" + str(not game.check_piece(move, source_type)))
                     print("ERROR: Improper destination move for pawn. Please try again.")
-            elif source_type == 2 and (game.check_no_piece_override(move) or \
+            elif source_type == 2 and (not game.check_no_piece_override(move) or \
                 not game.check_piece(move, source_type)):
                     print("ERROR: Improper destination move for bischop. Please try again.")
-            elif source_type == 3 and (game.check_no_piece_override(move) \
+            elif source_type == 3 and ( game.check_no_piece_override(move) \
                 or not game.check_piece(move, source_type)):
                     print("ERROR: Improper destination move for rook. Please try again.")
-            elif source_type == 4 and (game.check_no_piece_override(move) \
+            elif source_type == 4 and (not game.check_no_piece_override(move) \
                 or not game.check_piece(move, source_type)):
                     print("ERROR: Improper destination move for queen. Please try again.")
             elif source_type == 5 and not game.check_piece(move, source_type): 
