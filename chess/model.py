@@ -27,7 +27,7 @@ class Piece:
     def type_enum(self) -> int:
         return 0
     
-    def valid_moves(self, moves:str) -> list:
+    def valid_moves(self, position:str) -> list:
         return []
     
     def check_path(self, source: str, dest: str) -> bool:
@@ -47,11 +47,65 @@ class Pawn(Piece):
     def type_enum(self) -> int:
         return 1
     
-    def valid_moves(self, moves:str) -> list:
-        return ['TODO']
+    def valid_moves(self, position:str) -> list:
+        is_white = self._is_white
+        # print("valid moves")
+        # print(is_white)
+        x, y = position[0], int(position[1])
+        possible_moves = []
+
+        # Determine the direction the pawn moves based on color
+        direction = 1 if is_white else -1
+
+        # Move one square ahead
+        if (1 <= y + direction <= 8):
+            possible_moves.append(x + str(y + direction))
+
+        # Move two squares ahead if pawn is at starting position
+        if ((y == 2 and is_white) or (y == 7 and not is_white)):
+            if (1 <= y + 2 * direction <= 8):
+                possible_moves.append(x + str(y + 2 * direction))
+
+        # En passant
+        if ((y == 5 and is_white) or (y == 4 and not is_white)):
+            # Check if there is a neighboring pawn that moved two squares ahead in the previous move
+            left_neighbor = chr(ord(x) - 1) + str(y)
+            right_neighbor = chr(ord(x) + 1) + str(y)
+        print(possible_moves)
+        return possible_moves
+
     
     def get_path(self, source: str, dest: str) -> list:
-        return [] #TODO
+        empty_positions = []
+        x1, y1 = source[0], int(source[1])
+        x2, y2 = dest[0], int(dest[1])
+        color = self._is_white
+        # Check for valid pawn move
+        if (x1 == x2) and (y2 == y1+1) and (color):  # White pawn moving one square ahead
+            empty_positions.append(x1 + str(y1+1))
+        elif (x1 == x2) and (y2 == y1+2) and (color) and (y1 == 2):  # White pawn moving two squares ahead
+            empty_positions.append(x1 + str(y1+1))
+            empty_positions.append(x1 + str(y1+2))
+        elif (x1 != x2) and (y2 == y1+1) and (color):  # White pawn capturing an opponent's pawn
+            empty_positions.append(x2 + str(y2))
+        elif (x1 != x2) and (y2 == y1+1) and (color) and (y1 == 5):  # White pawn making an en passant capture
+            empty_positions.append(x2 + str(y2))
+        
+        elif (x1 == x2) and (y2 == y1-1) and not color:  # Black pawn moving one square ahead
+            empty_positions.append(x1 + str(y1-1))
+        elif (x1 == x2) and (y2 == y1-2) and not color and (y1 == 7):  # Black pawn moving two squares ahead
+            empty_positions.append(x1 + str(y1-1))
+            empty_positions.append(x1 + str(y1-2))
+        elif (x1 != x2) and (y2 == y1-1) and not color:  # Black pawn capturing an opponent's pawn
+            empty_positions.append(x2 + str(y2))
+        elif (x1 != x2) and (y2 == y1-1) and not color and (y1 == 4):  # Black pawn making an en passant capture
+            empty_positions.append(x2 + str(y2))
+        
+        else:
+            return empty_positions  # Invalid move, return empty list
+        
+        return empty_positions
+
     
 class Bischop(Piece):
     def __init__(self, is_white: bool) -> None:
@@ -321,13 +375,15 @@ class Game:
         return full
 
     def check_piece(self,move, id):
+        print("in check_piece")
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
         source_piece = self.get_source_piece(source)
         if source_piece.type_enum() == id and \
             dest in source_piece.valid_moves(source): #get correct moves per id/enum/type
                 path = source_piece.get_path(source, dest) #get the necessary empty path for everything but queen
-                if id in [2,3,4] and self.check_no_path_override(path): #then check if path is unobstructed
+                if id in [1,2,3,4] and not self.check_no_path_override(path): #then check if path is unobstructed
+                    print("in check for path is unobstructed")
                     self.accept_move(move) #finally move
                     return True
                 if id == 5:
@@ -338,11 +394,12 @@ class Game:
     def accept_move(self, move):
         # TODO: Implement updating the board with the give move
         self.white_to_play = not self.white_to_play
+        print("accept_move")
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
         #dest_piece = self.get_dest_piece(dest) #only important if dest_piece is king and captured
         source_piece = self.get_source_piece(source)
-        if source_piece.type_enum() in [2,3,4]:
+        if source_piece.type_enum() in [1,2,3,4]:
             self.board.set(source, None)
             self.board.set(dest, source_piece)
         elif source_piece.type_enum() == 5: #knight

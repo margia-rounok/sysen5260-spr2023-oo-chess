@@ -10,8 +10,8 @@ while not game.game_over:
     while True: 
         prompt = "White to play:" if game.white_to_play else "Black to play:"
         move = input(prompt)
-        print(move)
-        if game.check_input(move) is None or game.check_moved_op(move): #valid move
+        # print(move)
+        if game.check_input(move) is None or not game.check_moved_op(move): #valid move
             # and not game.check_move_exist(move)
             # print("here")
             print("ERROR: Improper source move. Please try again.")
@@ -19,7 +19,10 @@ while not game.game_over:
             print("ERROR: Improper destination move. Please try again.")
         else:
             source_type = game.get_source_type(move)
-            if source_type == 2 and (game.check_no_piece_override(move) or \
+            if source_type == 1 and (not game.check_no_piece_override(move) or \
+                not game.check_piece(move, source_type)):
+                    print("ERROR: Improper destination move for pawn. Please try again.")
+            elif source_type == 2 and (game.check_no_piece_override(move) or \
                 not game.check_piece(move, source_type)):
                     print("ERROR: Improper destination move for bischop. Please try again.")
             elif source_type == 3 and (game.check_no_piece_override(move) \
@@ -32,6 +35,8 @@ while not game.game_over:
                 #knight does not need to check for override per game rules
                 print("ERROR: Improper destination move for knight. Please try again.")
             else:
+                print("in else")
+                # game.check_piece(move, source_type)
                 break
         
     # prompt = "White to play:" if game.white_to_play else "Black to play:"
