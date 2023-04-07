@@ -9,7 +9,7 @@ while not game.game_over:
     print(view.board_to_text(game.board))
     move = ""
     while True: 
-        prompt = "White to play:" if game.white_to_play else "Black to play:"
+        prompt = "White to play: " if game.white_to_play else "Black to play: "
         move = input(prompt)
         # print(move)
         if game.check_input(move) is None or not game.check_moved_op(move): #valid move
