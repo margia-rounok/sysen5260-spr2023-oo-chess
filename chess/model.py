@@ -317,8 +317,39 @@ class Knight(Piece):
         return moves
     
     def get_path(self, source: str, dest: str) -> list:
-        return []
+        return [] #knight can jump over pieces 
 
+class King(Piece):
+    def __init__(self, is_white: bool) -> None:
+        super().__init__(is_white)
+
+    def __hash__(self):
+        super().__hash__()
+
+    def __eq__(self, other):
+        super().__eq__(other)
+
+    def type_enum(self) -> int:
+        return 6
+
+    def valid_moves(self, position:str) -> list:
+        x, y = position[0], int(position[1])
+        moves = []
+
+        # check all possible moves
+        for i in range(-1, 2):
+            for j in range(-1, 2):
+                if i == 0 and j == 0:
+                    continue  # king can't stay in the same position
+                new_x, new_y = ord(x) + i, y + j
+                if 97 <= new_x <= 104 and 1 <= new_y <= 8:
+                    moves.append(chr(new_x) + str(new_y))
+
+        return moves
+        
+    def get_path(self, source: str, dest: str) -> list:
+        moves = []
+        return moves.append(dest) #king moves one spot 
 
 class Game:
     def __init__(self):
@@ -448,5 +479,10 @@ class Game:
         self.board.set('g1', Knight(is_white=True))
         self.board.set('b8', Knight(is_white=False))
         self.board.set('g8', Knight(is_white=False))
+
+        #setting up king
+        self.board.set('e1', King(is_white=True))
+        self.board.set('e8', King(is_white=False))
+
 
 
