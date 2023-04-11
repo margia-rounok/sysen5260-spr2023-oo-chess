@@ -321,6 +321,7 @@ class Game:
         self.board = Board()
         self.white_to_play = True
         self.game_over = False
+        self.king_pos = ""
 
     def check_input(self, move):
         pattern = r"[a-h][1-8][a-h][1-8]"
@@ -344,7 +345,7 @@ class Game:
 
     def get_dest_piece(self, dest: str):
         return self.board.get(dest)
-
+    
     def check_moved_op(self, move):
         source = self.get_source_pos(move)
         source_piece = self.get_source_piece(source)
@@ -396,11 +397,12 @@ class Game:
                     return True
                 if id == 5 or id == 6:
                     self.accept_move(move) #knight can move
+                    if(id == 6): #king
+                        self.king_pos == move
                     return True
         return False
 
     def accept_move(self, move):
-        # TODO: Implement updating the board with the give move
         self.white_to_play = not self.white_to_play
         print("accept_move")
         source = self.get_source_pos(move)
