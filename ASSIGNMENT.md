@@ -16,7 +16,7 @@ has a pretty good summary [here](https://en.wikipedia.org/wiki/Rules_of_chess).
 You'll need to implement the following user-stories:
 
 As a player...
-* I want to enter a move like 'e2e4' and see the piece at e2 moved to e4.
+* <strike> I want to enter a move like 'e2e4' and see the piece at e2 moved to e4. (done) </strike>
 * I want to receive an error if I try to... 
     *  <strike> enter an ill-formatted move -- i.e. anything not of the form `[a..h][1..8][a..h][1..8]`.
     (done)  </strike>
