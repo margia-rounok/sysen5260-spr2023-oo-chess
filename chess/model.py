@@ -19,7 +19,8 @@ class Piece:
         self._is_white = is_white
 
     def __hash__(self):
-        return hash((type(self), self._is_white))
+        combined_hash_str = str(type(self)) + str(self._is_white)
+        return hash(combined_hash_str)
 
     def __eq__(self, other: "Piece") -> bool:
         return hash(self) == hash(other)
@@ -38,11 +39,11 @@ class Pawn(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
 
-    def __hash__(self):
-        super().__hash__()
+    # def __hash__(self):
+    #     super().__hash__()
 
-    def __eq__(self, other):
-        super().__eq__(other)
+    # def __eq__(self, other):
+    #     super().__eq__(other)
     
     def type_enum(self) -> int:
         return 1
