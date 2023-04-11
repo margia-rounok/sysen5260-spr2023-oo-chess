@@ -48,7 +48,7 @@ def checkBoard(is_white_to_play, king_pos, curr_color: bool):
   if checkKing(is_white, i, j):
     return 1
 
-def checkKnight(board, c, i, j):
+def checkKnight(c, i, j):
     # All possible moves of the knight
     x = [ 2, 2, -2, -2, 1, 1, -1, -1 ]
     y = [ 1, -1, 1, -1, 2, -2, 2, -2 ]

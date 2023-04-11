@@ -26,6 +26,8 @@ while not game.game_over:
             elif source_type == 2 and (not game.check_no_piece_override(move) or \
                 not game.check_piece(move, source_type)):
                     print("ERROR: Improper destination move for bischop. Please try again.")
+            elif game.check_king(move):
+                print("ERROR: Your king is in check with this move. Please try again") 
             elif source_type == 3 and (not game.check_no_piece_override(move) \
                 or not game.check_piece(move, source_type)):
                     print("ERROR: Improper destination move for rook. Please try again.")

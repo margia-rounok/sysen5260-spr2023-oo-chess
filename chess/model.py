@@ -66,7 +66,6 @@ class Pawn(Piece):
             # Check if there is a neighboring pawn that moved two squares ahead in the previous move
             left_neighbor = chr(ord(x) - 1) + str(y)
             right_neighbor = chr(ord(x) + 1) + str(y)
-        print(possible_moves)
         return possible_moves
 
     
@@ -368,8 +367,6 @@ class Game:
         # true if no override
         dest = self.get_dest_pos(move)
         dest_piece = self.get_dest_piece(dest)
-        print(dest_piece is None)
-        print(self.white_to_play)
         return dest_piece is None or \
         dest_piece._is_white != self.white_to_play 
 
@@ -384,15 +381,13 @@ class Game:
         return full
 
     def check_piece(self,move, id):
-        print("in check_piece")
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
         source_piece = self.get_source_piece(source)
         if source_piece.type_enum() == id and \
             dest in source_piece.valid_moves(source): #get correct moves per id/enum/type
-                path = source_piece.get_path(source, dest) #get the necessary empty path for everything but queen
+                path = source_piece.get_path(source, dest) #get the necessary empty path for everything but knight
                 if id in [1,2,3,4] and not self.check_no_path_override(path): #then check if path is unobstructed
-                    print("in check for path is unobstructed")
                     self.accept_move(move) #finally move
                     return True
                 if id == 5 or id == 6:
@@ -404,7 +399,6 @@ class Game:
 
     def accept_move(self, move):
         self.white_to_play = not self.white_to_play
-        print("accept_move")
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
         #dest_piece = self.get_dest_piece(dest) #only important if dest_piece is king and captured
@@ -416,7 +410,28 @@ class Game:
             self.board.set(source, None)
             self.board.set(dest, source_piece)
 
-        
+    def get_piece(self, op_color): 
+        letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+        nums = [1,2,3,4,5,6,7,8]
+        location = []
+        for x in letters:
+            for y in nums:
+                pos = x + str(y)
+                curr_piece = self.board.get(pos)
+                if curr_piece is not None:
+                    if(curr_piece._is_white == op_color):
+                        location.append(pos)
+        return location
+
+    def check_king(self, move):
+        # your king is in check if you make a move that allows easy access from other piece to king
+        enemy_pieces_loc = self.get_piece(self.white_to_play)
+        print(enemy_pieces_loc)
+        # valid_moves = source_piece.valid_moves()
+        # if self.king_pos in valid_moves:
+        #     return True
+        return True
+
     def set_up_pieces(self):
         """Place pieces on the board as per the initial setup."""
         # empty is white and filled is black
