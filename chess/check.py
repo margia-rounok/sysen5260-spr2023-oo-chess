@@ -7,7 +7,18 @@ board = []
 #TODO: convert to our game code and then slowly integrate everything
 #TODO: change x to letters
 def get_piece(piece_id, is_white): 
-	return [] #TODO: returns list of all pieces of this color 
+  letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+  nums = [1,2,3,4,5,6,7,8]
+  pieces = []
+  for x in letters:
+    for y in nums:
+        pos = x + str(y)
+        curr_piece = self.board.get(pos)
+        if curr_piece is not None:
+          if(curr_piece._is_white == is_white and curr_piece.type_enum() == piece_id):
+            pieces.append(curr_piece)
+
+  return pieces #TODO: returns list of all pieces of this color 
 
 def checkBoard(is_white_to_play, king_pos, curr_color: bool):
   i = king_pos[0]

@@ -450,6 +450,3 @@ class Game:
         #setting up king
         self.board.set('e1', King(is_white=True))
         self.board.set('e8', King(is_white=False))
-
-
-
