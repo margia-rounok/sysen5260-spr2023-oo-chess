@@ -422,15 +422,33 @@ class Game:
                     if(curr_piece._is_white == op_color):
                         location.append(pos)
         return location
-
+    
     def check_king(self, move):
         # your king is in check if you make a move that allows easy access from other piece to king
+        source_pos = self.get_source_pos(move)
+        print(source_pos)
+        source_piece = self.board.get(source_pos)
+        print(source_piece)
+        ############################## WTF ####################################
+        valid_source_movements = source_piece.valid_moves(source_pos)
+        dest_pos = self.get_dest_pos(move)
+        if not self.check_piece(move, self.get_source_type(move)): 
+            return True #pre-emptive check to make sure that move is allowed
+
         enemy_pieces_loc = self.get_piece(self.white_to_play)
         print(enemy_pieces_loc)
-        # valid_moves = source_piece.valid_moves()
-        # if self.king_pos in valid_moves:
-        #     return True
-        return True
+
+        for loc in enemy_pieces_loc:
+            enemy_piece = self.get_source_piece(loc)
+            enemy_movements = enemy_piece.valid_moves(loc)
+            if self.king_pos in enemy_movements:
+                enemy_path = enemy_piece.get_path(loc, self.king_pos)
+                enemy_type = enemy_piece.type_enum()
+                if(enemy_type in [1,2,3,4] and self.check_no_path_override(enemy_path)): 
+                    #a valid next-hop path to my king exists
+                    return True
+
+        return False
 
     def set_up_pieces(self):
         """Place pieces on the board as per the initial setup."""
