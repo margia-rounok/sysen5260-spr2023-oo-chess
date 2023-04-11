@@ -38,12 +38,6 @@ class Piece:
 class Pawn(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
-
-    # def __hash__(self):
-    #     super().__hash__()
-
-    # def __eq__(self, other):
-    #     super().__eq__(other)
     
     def type_enum(self) -> int:
         return 1
@@ -112,12 +106,6 @@ class Bischop(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
 
-    def __hash__(self):
-        super().__hash__()
-
-    def __eq__(self, other):
-        super().__eq__(other)
-
     def type_enum(self) -> int:
         return 2
 
@@ -175,12 +163,6 @@ class Rook(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
 
-    def __hash__(self):
-        super().__hash__()
-
-    def __eq__(self, other):
-        super().__eq__(other)
-
     def type_enum(self) -> int:
         return 3
 
@@ -229,12 +211,6 @@ class Rook(Piece):
 class Queen(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
-
-    def __hash__(self):
-        super().__hash__()
-
-    def __eq__(self, other):
-        super().__eq__(other)
 
     def type_enum(self) -> int:
         return 4
@@ -298,12 +274,6 @@ class Knight(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
 
-    def __hash__(self):
-        super().__hash__()
-
-    def __eq__(self, other):
-        super().__eq__(other)
-
     def type_enum(self) -> int:
         return 5
 
@@ -323,12 +293,6 @@ class Knight(Piece):
 class King(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
-
-    def __hash__(self):
-        super().__hash__()
-
-    def __eq__(self, other):
-        super().__eq__(other)
 
     def type_enum(self) -> int:
         return 6
