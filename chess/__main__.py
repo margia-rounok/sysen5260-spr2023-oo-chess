@@ -35,6 +35,9 @@ while not game.game_over:
             elif source_type == 5 and not game.check_piece(move, source_type): 
                 #knight does not need to check for override per game rules
                 print("ERROR: Improper destination move for knight. Please try again.")
+            elif source_type == 6 and not game.check_piece(move, source_type): 
+                #knight does not need to check for override per game rules
+                print("ERROR: Improper destination move for king. Please try again.")
             else:
                 print("in else")
                 break

@@ -429,7 +429,7 @@ class Game:
                     print("in check for path is unobstructed")
                     self.accept_move(move) #finally move
                     return True
-                if id == 5:
+                if id == 5 or id == 6:
                     self.accept_move(move) #knight can move
                     return True
         return False
@@ -442,10 +442,10 @@ class Game:
         dest = self.get_dest_pos(move)
         #dest_piece = self.get_dest_piece(dest) #only important if dest_piece is king and captured
         source_piece = self.get_source_piece(source)
-        if source_piece.type_enum() in [1,2,3,4]:
+        if source_piece.type_enum() in [1,2,3,4,6]:
             self.board.set(source, None)
             self.board.set(dest, source_piece)
-        elif source_piece.type_enum() == 5: #knight
+        elif source_piece.type_enum() in [5,6]: #knight
             self.board.set(source, None)
             self.board.set(dest, source_piece)
 

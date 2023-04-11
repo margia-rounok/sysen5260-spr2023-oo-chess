@@ -29,7 +29,7 @@ As a player...
     * <strike> move any piece other than a knight over existing pieces (path override). (done) </strike>
     * <strike> move any piece to a square occupied by another of my pieces (dest override). (done) </strike>
     * <strike> move my pawn in violation of pawn-movement rules. (done) </strike>
-    * move my king in violation of king-movement rules.
+    * <strike> move my king in violation of king-movement rules.</strike>
     * make a move that results in my king being in check.
     * make any other moves prohibited by [movement rules](https://en.wikipedia.org/wiki/Rules_of_chess#Movement)
 * I want to move my king two squares towards my rook and see the rook also moved to complete a castle.
