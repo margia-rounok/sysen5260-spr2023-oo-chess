@@ -45,13 +45,13 @@ As a player...
    * A RETROSPECTIVE.md file summarizing the agile retrospective meeting you'll hold after you complete the work for this assignment. (Nuclino has a decent description of Agile Retrospectives [here](https://www.nuclino.com/articles/sprint-retrospective-meeting))
 
 # How you'll get an A
-* I can clone your repository, start the container, run `python -m chess`, and complete several moves in an interactive session.
+* <strike> I can clone your repository, start the container, run `python -m chess`, and complete several moves in an interactive session. </strike>
 * You have written functional tests to exercise each of the user-stories outlined above.
-* Your code is readable: Meaningful names, comments where apropriate, keep modules, classes, and functions small, etc.
+* <strike> Your code is readable: Meaningful names, comments where apropriate, keep modules, classes, and functions small, etc.
 * Your code is well organized and demonstrates good use of object oriented design principles like:
     * Separation of Concerns / Single responsibility principle.
     * Favor Cohesion / Avoid Coupling.
-    * Use of design patterns.
+    * Use of design patterns. </strike>
 * Your code has good unit-test coverage.
 * All tests pass.
 * Your Design Document is a good piece of technical writing with sections, descriptive prose, etc.
