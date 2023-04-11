@@ -2,69 +2,41 @@
 
 # Function to check if any of the two
 # kings is unsafe or not
-def checkBoard(board, is_white_to_play):
+board = []
 
-	# Find the position of both the kings
-	for i in range(8):
-		for j in range(8):
-		
-			# Check for all pieces which
-			# can attack White King
-			if board[i][j] == 'k':
-			
-				# Check for Knight
-				if lookForn(board, 'N', i, j):
-					return 1
+def get_piece(piece_id, color): 
+	return [] #TODO: returns list of all pieces of this color 
 
-				# Check for Pawn
-				if lookForp(board, 'P', i, j):
-					return 1
+def checkBoard(is_white_to_play, king_pos, curr_color: bool):
+  i = king_pos[0]
+  j = king_pos[1]
 
-				# Check for Rook
-				if lookForr(board, 'R', i, j):
-					return 1
+  # Check for Knight
+  if checkKnight('N', i, j):
+    return True
 
-				# Check for Bishop
-				if lookForb(board, 'B', i, j):
-					return 1
+  # Check for Pawn
+  if checkPawn('P', i, j):
+    return True
 
-				# Check for Queen
-				if lookForq(board, 'Q', i, j):
-					return 1
+  # Check for Rook
+  if lookForr('R', i, j):
+    return 1
 
-				# Check for King
-				if lookFork(board, 'K', i, j):
-					return 1
+  # Check for Bishop
+  if lookForb('B', i, j):
+    return 1
 
-			# Check for all pieces which
-			# can attack Black King
-			if board[i][j] == 'K':
-				# Check for Knight
-				if lookForn(board, 'n', i, j):
-					return 2
+  # Check for Queen
+  if lookForq('Q', i, j):
+    return 1
 
-				# Check for Pawn
-				if lookForp(board, 'p', i, j):
-					return 2
+  # Check for King
+  if lookFork('K', i, j):
+    return 1
 
-				# Check for Rook
-				if lookForr(board, 'r', i, j):
-					return 2
 
-				# Check for Bishop
-				if lookForb(board, 'b', i, j):
-					return 2
-
-				# Check for Queen
-				if lookForq(board, 'q', i, j):
-					return 2
-
-				# Check for King
-				if lookFork(board, 'k', i, j):
-					return 2
-	return 1
-
-def lookFork(board, c, i, j):
+def checkKnight(c, i, j, curr_color):
 	# Store all possible moves of the king
 	x = [ -1, -1, -1, 0, 0, 1, 1, 1 ]
 	y = [ -1, 0, 1, -1, 1, -1, 0, 1 ]
@@ -73,10 +45,10 @@ def lookFork(board, c, i, j):
 		# incrementing index values
 		m = i + x[k]
 		n = j + y[k]
-
+		pos = str(m) + str(n)
 		# checking boundary conditions
 		# and character match
-		if inBounds(m, n) and board[m][n] == c:
+		if inBounds(m, n) and self.board.get(pos)._is_white is not curr_color:
 			return True
 	return False
 
@@ -178,21 +150,21 @@ def lookForn(board, c, i, j):
 	return False
 
 # Function to check if pawn can attack the king
-def lookForp(board, c, i, j):
-	if ord(c) >= 65 and ord(c) <= 90:
+def checkPawn(c, i, j):
+	if c == True:
 		# Check for white pawn
-		lookFor = 'P'
-		if inBounds(i + 1, j - 1) and board[i + 1][j - 1] == lookFor:
+		lookFor = get_piece(1, c)
+		if inBounds(i + 1, j - 1) and self.board.get(str(i + 1) + str(j-1)) in lookFor:
 			return True
 
-		if inBounds(i + 1, j + 1) and board[i + 1][j + 1] == lookFor:
+		if inBounds(i + 1, j + 1) and self.board.get(str(i + 1) + str(j+1)) in lookFor:
 			return True
 	else:
 		# Check for black pawn
-		lookFor = 'p'
-		if inBounds(i - 1, j - 1) and board[i - 1][j - 1] == lookFor:
+		lookFor = get_piece(1, not c)
+		if inBounds(i - 1, j - 1) and self.board.get(str(i - 1) + str(j-1)) in lookFor:
 			return True
-		if inBounds(i - 1, j + 1) and board[i - 1][j + 1] == lookFor:
+		if inBounds(i - 1, j + 1) and self.board.get(str(i - 1) + str(j+1)) in lookFor:
 			return True
 	return False
 
@@ -201,22 +173,3 @@ def lookForp(board, c, i, j):
 def inBounds(i, j):
 	# Checking boundary conditions
 	return i >= 0 and i < 8 and j >= 0 and j < 8
-
-# Chessboard instance
-board = [ [ '-', '-', '-', 'k', '-', '-', '-', '-' ],
-[ 'p', 'p', 'p', '-', 'p', 'p', 'p', 'p' ],
-[ '-', '-', '-', '-', '-', 'b', '-', '-' ],
-[ '-', '-', '-', 'R', '-', '-', '-', '-' ],
-[ '-', '-', '-', '-', '-', '-', '-', '-' ],
-[ '-', '-', '-', '-', '-', '-', '-', '-' ],
-[ 'P', '-', 'P', 'P', 'P', 'P', 'P', 'P' ],
-[ 'K', '-', '-', '-', '-', '-', '-', '-' ] ]
-
-if checkBoard(board) == 0:
-print("No king in danger")
-elif checkBoard(board) == 1:
-print("White king in danger")
-else:
-print("Black king in danger")
-
-# This code is contributed by divyeshrabadiya07.
