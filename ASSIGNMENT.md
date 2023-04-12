@@ -42,7 +42,7 @@ As a player...
 * A link to your homework group's github repository that will contain:
    * A working chess program.
    * A DESIGN.md file that explains the design of your system to a developer wishing to use or extend your system.
-   * A RETROSPECTIVE.md file summarizing the agile retrospective meeting you'll hold after you complete the work for this assignment. (Nuclino has a decent description of Agile Retrospectives [here](https://www.nuclino.com/articles/sprint-retrospective-meeting))
+   * <strike> A RETROSPECTIVE.md file summarizing the agile retrospective meeting you'll hold after you complete the work for this assignment. (Nuclino has a decent description of Agile Retrospectives [here](https://www.nuclino.com/articles/sprint-retrospective-meeting)) (done) </strike>
 
 # How you'll get an A
 * <strike> I can clone your repository, start the container, run `python -m chess`, and complete several moves in an interactive session. </strike>
@@ -61,10 +61,10 @@ As a player...
       * An interaction diagram depicting the interaction between objects when:
          *  A user enters a valid move;
          *  A user enters an invalid move;
-* Your retrospective describes: 
+* <strike> Your retrospective describes: 
    *  A short narrative of how your team members collaborated.
    *  A summary of what your team did well.
-   *  A summary of what your team could do better next time.
+   *  A summary of what your team could do better next time. (done) </strike>
 
 Extra Credit:
 * Set up the GitHub Actions to enable Continuous Integration for your homework group.
