@@ -320,7 +320,7 @@ class Game:
         self.board = Board()
         self.white_to_play = True
         self.game_over = False
-        self.king_pos = ""
+        # self.king_pos = "e1" if self.white_to_play else "e8"
 
     def check_input(self, move):
         pattern = r"[a-h][1-8][a-h][1-8]"
@@ -392,12 +392,13 @@ class Game:
                     return True
                 if id == 5 or id == 6:
                     self.accept_move(move) #knight can move
-                    if(id == 6): #king
-                        self.king_pos == move
+                    # if(id == 6): #king
+                    #     self.king_pos == move
                     return True
         return False
 
     def accept_move(self, move):
+        # print("in accept_move")
         self.white_to_play = not self.white_to_play
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
@@ -421,35 +422,81 @@ class Game:
                 if curr_piece is not None:
                     if(curr_piece._is_white == op_color):
                         location.append(pos)
+        # print(location)
         return location
     
+    def check_one_hop_king(self, enemy_type, enemy_path):
+        # print("check_one_hop_king")
+        # print(enemy_type)
+        # print(enemy_path)
+        if enemy_type in [1,2,3,4]:
+        #    print("correct type")
+           for pos in enemy_path:
+                pos_piece = self.board.get(pos)
+                if pos_piece is not None:
+                        return False
+        # else: 
+        #     for pos in enemy_path:
+        #         pos_piece = self.board.get(pos)
+        #         if self.board.get(pos) is not None:
+        #                 return False
+        return True
+
+    def undo_move(self, source, source_piece, dest):
+        self.board.set(source, source_piece)
+        self.board.set(dest, None)
+        # self.white_to_play = not self.white_to_play
+
+
+    def get_my_king_pos(self, color):
+        letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+        nums = [1,2,3,4,5,6,7,8]
+        for x in letters:
+            for y in nums:
+                pos = x + str(y)
+                curr_piece = self.board.get(pos)
+                if curr_piece is not None:
+                    if(curr_piece.type_enum() == 6 and curr_piece._is_white == color):
+                        return pos
+        return ""
+
+
     def check_king(self, move):
         # your king is in check if you make a move that allows easy access from other piece to king
+        # print("in check king")
+        op_color = not self.white_to_play
+        # self.white_to_play = not self.white_to_play
         source_pos = self.get_source_pos(move)
-        print(source_pos)
         source_piece = self.board.get(source_pos)
-        print(source_piece)
+        dest = self.get_dest_pos(move)
         ############################## WTF ####################################
         valid_source_movements = source_piece.valid_moves(source_pos)
         dest_pos = self.get_dest_pos(move)
-        if not self.check_piece(move, self.get_source_type(move)): 
-            return True #pre-emptive check to make sure that move is allowed
-
-        enemy_pieces_loc = self.get_piece(self.white_to_play)
-        print(enemy_pieces_loc)
-
+        self.board.set(source_pos, None)
+        self.board.set(dest, source_piece)
+        king_pos = self.get_my_king_pos(self.white_to_play)
+        enemy_pieces_loc = self.get_piece(op_color)
+        # print(enemy_pieces_loc)
         for loc in enemy_pieces_loc:
             enemy_piece = self.get_source_piece(loc)
             enemy_movements = enemy_piece.valid_moves(loc)
-            if self.king_pos in enemy_movements:
-                enemy_path = enemy_piece.get_path(loc, self.king_pos)
+            if king_pos in enemy_movements:
+                # print("dest in enemy movements")
+                # print(enemy_movements)
+                # print(enemy_piece)
+                enemy_path = enemy_piece.get_path(loc, king_pos)
+                # print(enemy_path)
                 enemy_type = enemy_piece.type_enum()
-                if(enemy_type in [1,2,3,4] and self.check_no_path_override(enemy_path)): 
+                if(self.check_one_hop_king(enemy_type, enemy_path)): 
                     #a valid next-hop path to my king exists
+                    self.undo_move(source_pos, source_piece, dest)
+                    # print("ayo king is one hop away")
                     return True
-
+        # self.board.set(source_pos, source_piece)
+        # self.board.set(dest, None)
+        self.undo_move(source_pos, source_piece, dest)
         return False
-
+    
     def set_up_pieces(self):
         """Place pieces on the board as per the initial setup."""
         # empty is white and filled is black

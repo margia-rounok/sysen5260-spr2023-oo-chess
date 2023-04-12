@@ -18,11 +18,11 @@ while not game.game_over:
             print("ERROR: Improper source move. Please try again.")
         elif not game.check_no_piece_override(move):
             print("ERROR: Improper destination move. Please try again.")
-        # elif game.check_king(move):
-        #         print("ERROR: Your king is in check with this move. Please try again") 
         else:
             source_type = game.get_source_type(move)
-            if source_type == 1 and (not game.check_no_piece_override(move) or \
+            if game.check_king(move):
+                print("ERROR: Your king is in check with this move. Please try again") 
+            elif source_type == 1 and (not game.check_no_piece_override(move) or \
                 not game.check_piece(move, source_type)):
                     print("ERROR: Improper destination move for pawn. Please try again.")
             elif source_type == 2 and (not game.check_no_piece_override(move) or \
