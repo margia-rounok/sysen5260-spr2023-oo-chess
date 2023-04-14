@@ -551,6 +551,69 @@ class Game:
                         return pos
         return ""
 
+    def can_king_move_safely(self, king_pos):
+        # get the valid moves for the king
+        # get the valid moves for the enemy pieces
+        king_piece = self.get_source_piece(king_pos)
+        king_valid_moves = king_piece.valid_moves(king_pos)
+        for move in king_valid_moves:
+            if self.check_king(move) == False:
+                # any possible king movements gets out of check --> return True
+                return True
+        return False
+
+    def can_king_be_protected(self, king_pos, other_pieces_positions):
+        # get the valid moves for the king
+        # get the valid moves for my pieces
+        # there exists a valid move for the king that is not in a valid move the 
+        # pieces 
+        my_pieces_loc = self.get_piece(self.white_to_play)
+        king_attacked_pos = [] #path of each enemy piece that can check it
+
+        op_color = not self.white_to_play
+        enemy_pieces_loc = self.get_piece(op_color)
+        for loc in enemy_pieces_loc:
+            enemy_piece = self.get_source_piece(loc)
+            enemy_movements = enemy_piece.valid_moves(loc)
+            if king_pos in enemy_movements:
+                enemy_path = enemy_piece.get_path(loc, king_pos)
+                enemy_type = enemy_piece.type_enum()
+                if enemy_type == 5: 
+                    king_attacked_pos.append(loc)
+                else: 
+                    if(self.check_one_hop_king(enemy_type, enemy_path)): #piece can attack king
+                        king_attacked_pos = king_attacked_pos + enemy_path
+
+        for move in my_pieces_loc:
+            # Check if the piece can move to a square that would block the 
+            # attack on the king or capture the attacking piece
+            my_piece = self.get_source_piece(move)
+            my_piece_valid_movement = my_piece.valid_moves()
+            for my_piece_valid_moves in my_piece_valid_movement:
+                if my_piece_valid_moves in king_attacked_pos:
+                    return True
+        return False
+
+    def is_checkmate(self):
+        king_pos = self.get_my_king_pos(self.white_to_play)
+        op_color = not self.white_to_play
+        enemy_pieces_loc = self.get_piece(op_color)
+
+        for enemy_loc in enemy_pieces_loc: 
+            enemy_piece = self.get_source_piece(enemy_loc)
+            enemy_path = enemy_piece.get_path(enemy_loc, king_pos)
+            enemy_type = enemy_piece.type_enum()
+
+            # Check if the piece can attack the king in one move (under attack)
+            if(self.check_one_hop_king(enemy_type, enemy_path)):
+                # If the king is attacked and can't move to a safe square or be 
+                # protected by another piece, it's checkmate
+
+                if not self.can_king_move_safely(king_pos) \
+                    and not self.can_king_be_protected(king_pos, enemy_pieces_loc):
+                        self.game_over = True
+                        return True
+        return False
 
     def check_king(self, move):
         # your king is in check if you make a move that allows easy access from other piece to king
@@ -560,7 +623,6 @@ class Game:
         source_pos = self.get_source_pos(move)
         source_piece = self.board.get(source_pos)
         dest = self.get_dest_pos(move)
-        ############################## WTF ####################################
         valid_source_movements = source_piece.valid_moves(source_pos)
         dest_pos = self.get_dest_pos(move)
         self.board.set(source_pos, None)
@@ -578,7 +640,7 @@ class Game:
                 enemy_path = enemy_piece.get_path(loc, king_pos)
                 # print(enemy_path)
                 enemy_type = enemy_piece.type_enum()
-                if(self.check_one_hop_king(enemy_type, enemy_path)): 
+                if(self.check_one_hop_king(enemy_type, enemy_path)): #piece can attack king
                     #a valid next-hop path to my king exists
                     self.undo_move(source_pos, source_piece, dest)
                     # print("ayo king is one hop away")
