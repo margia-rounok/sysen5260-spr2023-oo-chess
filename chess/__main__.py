@@ -11,13 +11,18 @@ while not game.game_over:
     while True: 
         prompt = "White to play: " if game.white_to_play else "Black to play: "
         move = input(prompt)
-        # print(move)
-        if game.check_input(move) is None or not game.check_moved_op(move): #valid move
+        game.move_list_append(move)
+        #game.piece_list_append(move)
+        if move == 'backup':
+             game.do_backup(move)
+             break
+        elif game.check_input(move) is None or not game.check_moved_op(move): #valid move
             # and not game.check_move_exist(move)
             # print("here")
             print("ERROR: Improper source move. Please try again.")
         elif not game.check_no_piece_override(move):
             print("ERROR: Improper destination move. Please try again.")
+
         else:
             source_type = game.get_source_type(move)
             if game.check_king(move):

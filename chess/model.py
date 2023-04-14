@@ -47,6 +47,7 @@ class Pawn(Piece):
         # print("valid moves")
         # print(is_white)
         x, y = position[0], int(position[1])
+        print(x, y)
         possible_moves = []
 
         # Determine the direction the pawn moves based on color
@@ -62,10 +63,13 @@ class Pawn(Piece):
                 possible_moves.append(x + str(y + 2 * direction))
 
         # En passant
-        if ((y == 5 and is_white) or (y == 4 and not is_white)):
+        if ((y == 4 and is_white) or (y == 5 and not is_white)):
             # Check if there is a neighboring pawn that moved two squares ahead in the previous move
-            left_neighbor = chr(ord(x) - 1) + str(y)
-            right_neighbor = chr(ord(x) + 1) + str(y)
+            print("ords: ", ord(x))
+            print('y', y)
+            left_neighbor = chr(ord(x)+1) + str(y)
+            right_neighbor = chr(ord(x)+1) + str(y)
+            print(left_neighbor, right_neighbor)
         return possible_moves
 
     
@@ -315,12 +319,78 @@ class King(Piece):
         moves = []
         return moves.append(dest) #king moves one spot 
 
+
+class move_node:
+    def __init__(self, move=None):
+        self.move = move
+        self.next = None
+
+class piece_node:
+    def __init__(self, piece=None):
+        self.piece = piece
+        self.next = None
+
 class Game:
     def __init__(self):
         self.board = Board()
         self.white_to_play = True
         self.game_over = False
+        self.head = move_node()
+        self.piece_head = piece_node()
         # self.king_pos = "e1" if self.white_to_play else "e8"
+
+    def move_list_append(self, move):
+        new_move_node = move_node(move)
+        dest = self.get_dest_pos(move)
+        new_piece_node = piece_node(self.get_dest_piece(dest))
+        cur_move = self.head
+        cur_piece = self.piece_head
+        while cur_move.next != None:
+            cur_move = cur_move.next
+            cur_piece = cur_piece.next
+        cur_move.next = new_move_node
+        cur_piece.next = new_piece_node
+
+    # return piece or space that was captured by a move
+    # def piece_list_append(self, move):
+    #     dest = self.get_dest_pos(move)
+    #     print("new piece node 1: ", self.get_dest_piece(dest))
+    #     print("dest: ", dest)
+    #     new_piece_node = piece_node(self.get_dest_piece(dest))
+    #     print("new piece node: ", new_piece_node)
+    #     cur = self.piece_head
+    #     while cur.next != None:
+    #         cur = cur.next
+    #     cur.next = new_piece_node
+    
+    def display(self):
+        elems = []
+        cur_node = self.head
+        while cur_node.next != None:
+            cur_node = cur_node.next
+            elems.append(cur_node.move)
+        return elems
+    
+    def display_piece_list(self):
+        elems = []
+        cur_node = self.piece_head
+        while cur_node.next != None:
+            cur_node = cur_node.next
+            elems.append(cur_node.piece)
+        print("piece elems: ", elems)
+        return elems
+
+    def pop_list(self):
+        cur_move_node = self.head
+        cur_piece_node = self.piece_head
+        while cur_move_node.next:
+            if cur_move_node.next.next == None:
+                cur_move_node.next = None
+                cur_piece_node.next = None
+            else:
+                cur_move_node = cur_move_node.next
+                cur_piece_node = cur_piece_node.next
+        return cur_move_node, cur_piece_node
 
     def check_input(self, move):
         pattern = r"[a-h][1-8][a-h][1-8]"
@@ -447,6 +517,27 @@ class Game:
         self.board.set(dest, None)
         # self.white_to_play = not self.white_to_play
 
+    def do_backup(self, move): 
+        self.pop_list()
+        move_list = self.display()
+        piece_list = self.display_piece_list()
+        piece_list_length = len(piece_list)
+        move_list_length = len(move_list)
+        if move_list_length == 0:
+            print("Must Make a move first!")
+        else:
+            self.white_to_play = not self.white_to_play
+            prev_move = move_list[move_list_length-1]
+            prev_piece = piece_list[piece_list_length-1]
+            dest = self.get_source_pos(prev_move)
+            source = self.get_dest_pos(prev_move)
+            # Need to check if piece was captured, if true respawn piece
+            dest_piece = self.get_dest_piece(source)
+            self.board.set(source, prev_piece)
+            self.board.set(dest, dest_piece)
+            self.pop_list()
+        #print("this will backup move")
+
 
     def get_my_king_pos(self, color):
         letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -463,7 +554,7 @@ class Game:
 
     def check_king(self, move):
         # your king is in check if you make a move that allows easy access from other piece to king
-        # print("in check king")
+        print("in check king")
         op_color = not self.white_to_play
         # self.white_to_play = not self.white_to_play
         source_pos = self.get_source_pos(move)
