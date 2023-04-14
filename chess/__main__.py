@@ -16,9 +16,9 @@ while not game.game_over:
         if move == 'backup':
              game.do_backup(move)
              break
-        elif game.is_checkmate(): 
-             print("Your king has been checkmated. Game over.")
-             break
+        # elif game.is_checkmate(): 
+        #      print("Your king has been checkmated. Game over.")
+        #      break
         elif game.check_input(move) is None or not game.check_moved_op(move): #valid move
             # and not game.check_move_exist(move)
             # print("here")
