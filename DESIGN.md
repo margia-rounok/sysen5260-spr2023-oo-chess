@@ -159,10 +159,36 @@ The chess model logic is also in model.py. This class begins with a Board class,
  an optional piece (None or a Piece object). It also has a setter, which given
  a location sets the piece to that location. 
 
- The chess model also has a Game class. 
+ The chess model also has a Game class. In the game class, there is a Board, a 
+  boolean flag white_to_play (determinign whose turn it is), a boolean game_over
+  flag, and two pointers to help with determining the past states of the game. 
+  This model implements the logic of chess. For each move, it checks if that 
+  move is valid (by callid the valid_moves function for each piece). If that
+  move is valid, it then checks that the path to that destination is valid.
+  If so, then it sets the board accordingly. There are also other conditions
+  that it checks for (e.g. valid commands, valid source locations, checks, etc.). 
+
 
 ### Game Play Module
+The game play module integrates everything together. While the game is still 
+ running, that is, the game_over has not been set, the system prompts the user 
+ for a valid move. Then it goes into a while True loop to check that the command
+ is valid, the move is valid, and the kign isn't in check or checkmated. If there
+ exists any error, it will prompt the user to re-enter a valid command until it
+ breaks out of the first while True loop. 
+
+ `TODO: object-diagram depicting a chess-game after several moves`
+
+ `TODO: interaction diagram for invalid moves`
+ `TODO: interaction diagram for valid moves`
 
 ## Testing
+The testing is primarily done through unit tests. These unit tests test that
+ invalid moves aren't allowed and valid moves happen in addition to input 
+ validation of the commands. Game play is also tested functionally through manual
+ inputs to ensure that entire game plays can occur. 
 
 ## Future Work
+Future work would make the game more chess like. Examples can include adding
+ a timed game, playing against an AI, and other tournament-style features. 
+ 
