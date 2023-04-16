@@ -1,6 +1,9 @@
 import chess.model as model
 import chess.view as view
 
+
+rules = model.Rules()
+
 #TODO move none type 
 game = model.Game()
 game.set_up_pieces()
@@ -11,7 +14,7 @@ while not game.game_over:
     while True: 
         prompt = "White to play: " if game.white_to_play else "Black to play: "
         move = input(prompt)
-        game.move_list_append(move)
+        game.move_history_append(move)
         #game.piece_list_append(move)
         if move == 'backup':
              game.do_backup(move)
@@ -30,24 +33,8 @@ while not game.game_over:
             source_type = game.get_source_type(move)
             if game.check_king(move):
                 print("ERROR: Your king is in check with this move. Please try again") 
-            elif source_type == 1 and (not game.check_no_piece_override(move) or \
-                not game.check_piece(move, source_type)):
+            elif not game.check_no_piece_override(move) or not game.check_piece(move, source_type):
                     print("ERROR: Improper destination move for pawn. Please try again.")
-            elif source_type == 2 and (not game.check_no_piece_override(move) or \
-                not game.check_piece(move, source_type)):
-                    print("ERROR: Improper destination move for bischop. Please try again.")
-            elif source_type == 3 and (not game.check_no_piece_override(move) \
-                or not game.check_piece(move, source_type)):
-                    print("ERROR: Improper destination move for rook. Please try again.")
-            elif source_type == 4 and (not game.check_no_piece_override(move) \
-                or not game.check_piece(move, source_type)):
-                    print("ERROR: Improper destination move for queen. Please try again.")
-            elif source_type == 5 and not game.check_piece(move, source_type): 
-                #knight does not need to check for override per game rules
-                print("ERROR: Improper destination move for knight. Please try again.")
-            elif source_type == 6 and not game.check_piece(move, source_type): 
-                #knight does not need to check for override per game rules
-                print("ERROR: Improper destination move for king. Please try again.")
             else:
                 print("in else")
                 break

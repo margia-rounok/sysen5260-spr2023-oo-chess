@@ -13,10 +13,39 @@ class Board:
     def set(self, location:str, piece: Optional['Piece']):
         self._squares[location] = piece
 
+    def king_location(self, is_white: bool) -> str:
+        for location, piece in self._squares.items():
+            if piece is not None and piece.type_enum() == 6 and piece._is_white == is_white:
+                return location
+        return ""
+    
+
+class Square:
+    def __init__(self, location:str, piece: Optional['Piece'] = None):
+        self._location = location
+        self._piece = piece
+
+    def get_location(self) -> str:
+        return self._location
+
+    def get_piece(self) -> Optional['Piece']:
+        return self._piece
+
+    def set_piece(self, piece: Optional['Piece']):
+        self._piece = piece
+
+    def __subtract__(self, other):
+        return abs(ord(self._location[0]) - ord(other._location[0])) + abs(int(self._location[1]) - int(other._location[1]))
+    def _subtract_vertical_position(self, other):
+        return abs(int(self._location[1]) - int(other._location[1]))
+    def _subtract_horizontal_position(self, other):
+        return abs(ord(self._location[0]) - ord(other._location[0]))
+    
 class Piece:
     """Abstract base class for chess pieces."""
     def __init__(self, is_white: bool) -> None:
         self._is_white = is_white
+        self.has_moved = False
 
     def __hash__(self):
         combined_hash_str = str(type(self)) + str(self._is_white)
@@ -34,10 +63,10 @@ class Piece:
     def check_path(self, source: str, dest: str) -> bool:
         return False
 
-
 class Pawn(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
+        self._just_moved_two = False
     
     def type_enum(self) -> int:
         return 1
@@ -47,7 +76,6 @@ class Pawn(Piece):
         # print("valid moves")
         # print(is_white)
         x, y = position[0], int(position[1])
-        print(x, y)
         possible_moves = []
 
         # Determine the direction the pawn moves based on color
@@ -63,13 +91,10 @@ class Pawn(Piece):
                 possible_moves.append(x + str(y + 2 * direction))
 
         # En passant
-        if ((y == 4 and is_white) or (y == 5 and not is_white)):
+        if ((y == 5 and is_white) or (y == 4 and not is_white)):
             # Check if there is a neighboring pawn that moved two squares ahead in the previous move
-            print("ords: ", ord(x))
-            print('y', y)
-            left_neighbor = chr(ord(x)+1) + str(y)
-            right_neighbor = chr(ord(x)+1) + str(y)
-            print(left_neighbor, right_neighbor)
+            left_neighbor = chr(ord(x) - 1) + str(y)
+            right_neighbor = chr(ord(x) + 1) + str(y)
         return possible_moves
 
     
@@ -103,8 +128,7 @@ class Pawn(Piece):
             return empty_positions  # Invalid move, return empty list
         
         return empty_positions
-
-    
+   
 class Bischop(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
@@ -272,7 +296,6 @@ class Queen(Piece):
             # The move is not valid, so return an empty list
             return []
 
-
 class Knight(Piece):
     def __init__(self, is_white: bool) -> None:
         super().__init__(is_white)
@@ -314,83 +337,38 @@ class King(Piece):
                     moves.append(chr(new_x) + str(new_y))
 
         return moves
+    
+    def check_castle_options(self, position:str) -> list:
+        """Checks if the king can castle and returns the possible moves
         
+        step 1: check if king has moved
+        step 2: check if rook has moved
+        step 3: check if there are pieces in between
+        step 4: check if king is in check
+        step 5: check if king will be in check after castling
+        step 6: check if king will pass through check
+        
+        """
+
     def get_path(self, source: str, dest: str) -> list:
         moves = []
         return moves.append(dest) #king moves one spot 
-
-
-class move_node:
-    def __init__(self, move=None):
-        self.move = move
-        self.next = None
-
-class piece_node:
-    def __init__(self, piece=None):
-        self.piece = piece
-        self.next = None
 
 class Game:
     def __init__(self):
         self.board = Board()
         self.white_to_play = True
         self.game_over = False
-        self.head = move_node()
-        self.piece_head = piece_node()
-        # self.king_pos = "e1" if self.white_to_play else "e8"
+        self.king_pos = ""
+        self.move_history = []
 
-    def move_list_append(self, move):
-        new_move_node = move_node(move)
-        dest = self.get_dest_pos(move)
-        new_piece_node = piece_node(self.get_dest_piece(dest))
-        cur_move = self.head
-        cur_piece = self.piece_head
-        while cur_move.next != None:
-            cur_move = cur_move.next
-            cur_piece = cur_piece.next
-        cur_move.next = new_move_node
-        cur_piece.next = new_piece_node
+    def move_piece(self, source: str, dest: str):
+        piece = self.board.get(source)
+        self.board.set(dest, piece)
+        self.board.set(source, None)
 
-    # return piece or space that was captured by a move
-    # def piece_list_append(self, move):
-    #     dest = self.get_dest_pos(move)
-    #     print("new piece node 1: ", self.get_dest_piece(dest))
-    #     print("dest: ", dest)
-    #     new_piece_node = piece_node(self.get_dest_piece(dest))
-    #     print("new piece node: ", new_piece_node)
-    #     cur = self.piece_head
-    #     while cur.next != None:
-    #         cur = cur.next
-    #     cur.next = new_piece_node
-    
-    def display(self):
-        elems = []
-        cur_node = self.head
-        while cur_node.next != None:
-            cur_node = cur_node.next
-            elems.append(cur_node.move)
-        return elems
-    
-    def display_piece_list(self):
-        elems = []
-        cur_node = self.piece_head
-        while cur_node.next != None:
-            cur_node = cur_node.next
-            elems.append(cur_node.piece)
-        print("piece elems: ", elems)
-        return elems
-
-    def pop_list(self):
-        cur_move_node = self.head
-        cur_piece_node = self.piece_head
-        while cur_move_node.next:
-            if cur_move_node.next.next == None:
-                cur_move_node.next = None
-                cur_piece_node.next = None
-            else:
-                cur_move_node = cur_move_node.next
-                cur_piece_node = cur_piece_node.next
-        return cur_move_node, cur_piece_node
+    def move_history_append(self, move):
+        self.move_history.append(move)
 
     def check_input(self, move):
         pattern = r"[a-h][1-8][a-h][1-8]"
@@ -454,7 +432,7 @@ class Game:
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
         source_piece = self.get_source_piece(source)
-        if source_piece.type_enum() == id and \
+        if source_piece is not None and source_piece.type_enum() == id and \
             dest in source_piece.valid_moves(source): #get correct moves per id/enum/type
                 path = source_piece.get_path(source, dest) #get the necessary empty path for everything but knight
                 if id in [1,2,3,4] and not self.check_no_path_override(path): #then check if path is unobstructed
@@ -462,24 +440,28 @@ class Game:
                     return True
                 if id == 5 or id == 6:
                     self.accept_move(move) #knight can move
-                    # if(id == 6): #king
-                    #     self.king_pos == move
+                    if(id == 6): #king
+                        self.king_pos == move
                     return True
+        return False
+    
+    def capture_piece(self, move):
+        dest = self.get_dest_pos(move)
+        dest_piece = self.get_dest_piece(dest)
+        if dest_piece is not None and \
+            dest_piece._is_white != self.white_to_play:
+                self.accept_move(move)
+                return True
         return False
 
     def accept_move(self, move):
-        # print("in accept_move")
         self.white_to_play = not self.white_to_play
         source = self.get_source_pos(move)
         dest = self.get_dest_pos(move)
         #dest_piece = self.get_dest_piece(dest) #only important if dest_piece is king and captured
         source_piece = self.get_source_piece(source)
-        if source_piece.type_enum() in [1,2,3,4,6]:
-            self.board.set(source, None)
-            self.board.set(dest, source_piece)
-        elif source_piece.type_enum() in [5,6]: #knight
-            self.board.set(source, None)
-            self.board.set(dest, source_piece)
+        self.board.set(source, None)
+        self.board.set(dest, source_piece)
 
     def get_piece(self, op_color): 
         letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -492,164 +474,35 @@ class Game:
                 if curr_piece is not None:
                     if(curr_piece._is_white == op_color):
                         location.append(pos)
-        # print(location)
         return location
     
-    def check_one_hop_king(self, enemy_type, enemy_path):
-        # print("check_one_hop_king")
-        # print(enemy_type)
-        # print(enemy_path)
-        if enemy_type in [1,2,3,4]:
-        #    print("correct type")
-           for pos in enemy_path:
-                pos_piece = self.board.get(pos)
-                if pos_piece is not None:
-                        return False
-        # else: 
-        #     for pos in enemy_path:
-        #         pos_piece = self.board.get(pos)
-        #         if self.board.get(pos) is not None:
-        #                 return False
-        return True
-
-    def undo_move(self, source, source_piece, dest):
-        self.board.set(source, source_piece)
-        self.board.set(dest, None)
-        # self.white_to_play = not self.white_to_play
-
-    def do_backup(self, move): 
-        self.pop_list()
-        move_list = self.display()
-        piece_list = self.display_piece_list()
-        piece_list_length = len(piece_list)
-        move_list_length = len(move_list)
-        if move_list_length == 0:
-            print("Must Make a move first!")
-        else:
-            self.white_to_play = not self.white_to_play
-            prev_move = move_list[move_list_length-1]
-            prev_piece = piece_list[piece_list_length-1]
-            dest = self.get_source_pos(prev_move)
-            source = self.get_dest_pos(prev_move)
-            # Need to check if piece was captured, if true respawn piece
-            dest_piece = self.get_dest_piece(source)
-            self.board.set(source, prev_piece)
-            self.board.set(dest, dest_piece)
-            self.pop_list()
-        #print("this will backup move")
-
-
-    def get_my_king_pos(self, color):
-        letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
-        nums = [1,2,3,4,5,6,7,8]
-        for x in letters:
-            for y in nums:
-                pos = x + str(y)
-                curr_piece = self.board.get(pos)
-                if curr_piece is not None:
-                    if(curr_piece.type_enum() == 6 and curr_piece._is_white == color):
-                        return pos
-        return ""
-
-    def can_king_move_safely(self, king_pos):
-        # get the valid moves for the king
-        # get the valid moves for the enemy pieces
-        king_piece = self.get_source_piece(king_pos)
-        king_valid_moves = king_piece.valid_moves(king_pos)
-        for move in king_valid_moves:
-            if self.check_king(move) == False:
-                # any possible king movements gets out of check --> return True
-                return True
-        return False
-
-    def can_king_be_protected(self, king_pos, other_pieces_positions):
-        # get the valid moves for the king
-        # get the valid moves for my pieces
-        # there exists a valid move for the king that is not in a valid move the 
-        # pieces 
-        my_pieces_loc = self.get_piece(self.white_to_play)
-        king_attacked_pos = [] #path of each enemy piece that can check it
-
-        op_color = not self.white_to_play
-        enemy_pieces_loc = self.get_piece(op_color)
-        for loc in enemy_pieces_loc:
-            enemy_piece = self.get_source_piece(loc)
-            enemy_movements = enemy_piece.valid_moves(loc)
-            if king_pos in enemy_movements:
-                enemy_path = enemy_piece.get_path(loc, king_pos)
-                enemy_type = enemy_piece.type_enum()
-                if enemy_type == 5: 
-                    king_attacked_pos.append(loc)
-                else: 
-                    if(self.check_one_hop_king(enemy_type, enemy_path)): #piece can attack king
-                        king_attacked_pos = king_attacked_pos + enemy_path
-
-        for move in my_pieces_loc:
-            # Check if the piece can move to a square that would block the 
-            # attack on the king or capture the attacking piece
-            my_piece = self.get_source_piece(move)
-            my_piece_valid_movement = my_piece.valid_moves()
-            for my_piece_valid_moves in my_piece_valid_movement:
-                if my_piece_valid_moves in king_attacked_pos:
-                    return True
-        return False
-
-    def is_checkmate(self):
-        king_pos = self.get_my_king_pos(self.white_to_play)
-        op_color = not self.white_to_play
-        enemy_pieces_loc = self.get_piece(op_color)
-
-        for enemy_loc in enemy_pieces_loc: 
-            enemy_piece = self.get_source_piece(enemy_loc)
-            enemy_path = enemy_piece.get_path(enemy_loc, king_pos)
-            enemy_type = enemy_piece.type_enum()
-
-            # Check if the piece can attack the king in one move (under attack)
-            if(self.check_one_hop_king(enemy_type, enemy_path)):
-                # If the king is attacked and can't move to a safe square or be 
-                # protected by another piece, it's checkmate
-
-                if not self.can_king_move_safely(king_pos) \
-                    and not self.can_king_be_protected(king_pos, enemy_pieces_loc):
-                        self.game_over = True
-                        return True
-        return False
-
     def check_king(self, move):
         # your king is in check if you make a move that allows easy access from other piece to king
-        print("in check king")
-        op_color = not self.white_to_play
-        # self.white_to_play = not self.white_to_play
         source_pos = self.get_source_pos(move)
+        print(source_pos)
         source_piece = self.board.get(source_pos)
-        dest = self.get_dest_pos(move)
+        print(source_piece)
+        ############################## WTF ####################################
         valid_source_movements = source_piece.valid_moves(source_pos)
         dest_pos = self.get_dest_pos(move)
-        self.board.set(source_pos, None)
-        self.board.set(dest, source_piece)
-        king_pos = self.get_my_king_pos(self.white_to_play)
-        enemy_pieces_loc = self.get_piece(op_color)
-        # print(enemy_pieces_loc)
+        if not self.check_piece(move, self.get_source_type(move)): 
+            return True #pre-emptive check to make sure that move is allowed
+
+        enemy_pieces_loc = self.get_piece(self.white_to_play)
+        print(enemy_pieces_loc)
+
         for loc in enemy_pieces_loc:
             enemy_piece = self.get_source_piece(loc)
             enemy_movements = enemy_piece.valid_moves(loc)
-            if king_pos in enemy_movements:
-                # print("dest in enemy movements")
-                # print(enemy_movements)
-                # print(enemy_piece)
-                enemy_path = enemy_piece.get_path(loc, king_pos)
-                # print(enemy_path)
+            if self.king_pos in enemy_movements:
+                enemy_path = enemy_piece.get_path(loc, self.king_pos)
                 enemy_type = enemy_piece.type_enum()
-                if(self.check_one_hop_king(enemy_type, enemy_path)): #piece can attack king
+                if(enemy_type in [1,2,3,4] and self.check_no_path_override(enemy_path)): 
                     #a valid next-hop path to my king exists
-                    self.undo_move(source_pos, source_piece, dest)
-                    # print("ayo king is one hop away")
                     return True
-        # self.board.set(source_pos, source_piece)
-        # self.board.set(dest, None)
-        self.undo_move(source_pos, source_piece, dest)
+
         return False
-    
+
     def set_up_pieces(self):
         """Place pieces on the board as per the initial setup."""
         # empty is white and filled is black
@@ -683,3 +536,167 @@ class Game:
         #setting up king
         self.board.set('e1', King(is_white=True))
         self.board.set('e8', King(is_white=False))
+
+
+
+class Rules:
+    def __init__(self):
+        pass
+
+    @classmethod
+    def get_source_pos(self, move):
+        return move[:2]
+    @classmethod
+    def get_dest_pos(self, move):
+        return move[2:]
+    @classmethod
+    def column_difference(cls, source, dest):
+        return ord(source[0]) - ord(dest[0])
+    @classmethod
+    def row_difference(cls, source, dest):
+        return int(source[1]) - int(dest[1])
+
+    @classmethod
+    def check_move(cls, move, board, white_to_play):
+        """Check if a move is valid using all the rules of chess.
+        Returns a tuple of (is_valid, reason).
+        """
+
+        source = cls.get_source_pos(move)
+        dest = cls.get_dest_pos(move)
+        source_piece = board.get(source)
+        dest_piece = board.get(dest)
+
+        # check if source piece is valid
+        if source_piece is None:
+            return (False,'No piece at source position.')
+        
+        # check if source piece is the right color
+        if source_piece._is_white != white_to_play:
+            return (False, 'Wrong color piece at source position.')
+        
+        # check if dest piece is the same color
+        if dest_piece is not None and dest_piece._is_white == white_to_play:
+            return (False, 'Wrong color piece at destination position.')
+        
+        # get valid moves for source piece
+        valid_moves = source_piece.valid_moves(source)
+
+        #check if move is a pawn special case
+        if(source_piece.type_enum() ==1 and cls.check_pawn_special_cases(move, board, white_to_play)):
+            #add pawn special cases to valid moves if conditions hold
+            valid_moves.append(move)
+
+        #check if move is a castle
+        if(source_piece.type_enum() == 6 and cls.check_castle(move, board, white_to_play)):
+            #add castle to valid moves if conditions hold
+            valid_moves.append(move)
+
+        #check if move is a valid move according to piece movement rules
+        if dest not in valid_moves:
+            return (False, 'Invalid move for piece.')
+        
+        #check if move puts own king in check
+        if cls.check_king_in_check(move, board, white_to_play):
+            return False
+        return True
+    
+    @classmethod
+    def check_pawn_special_cases(cls, move, board, white_to_play):
+        #Returns true if move is a pawn special case (en passant or capture)
+        return cls.check_pawn_capture(move, board, white_to_play) or cls.check_pawn_en_passant(move, board, white_to_play)
+    
+    @classmethod
+    def check_king_in_check(cls, move, board, white_to_play):
+        source = cls.get_source_pos(move)
+        dest = cls.get_dest_pos(move)
+        board.move_piece(source, dest)
+        if white_to_play:
+            king_pos = board.king_location(is_white=True)
+        else:
+            king_pos = board.king_location(is_white=True)
+        enemy_pieces_loc = board.get_piece(not white_to_play)
+        for loc in enemy_pieces_loc:
+            enemy_piece = board.get_source_piece(loc)
+            enemy_movements = enemy_piece.valid_moves(loc)
+            if king_pos in enemy_movements:
+                board.move_piece(dest, source)
+                return True
+        board.move_piece(dest, source)
+        return False
+
+    @classmethod
+    def check_pawn_capture(cls, move, board, white_to_play):
+        source = cls.get_source_pos(move)
+        dest = cls.get_dest_pos(move)
+        dest_piece = board.get(dest)
+        #Check if pawn move is diagonal
+        diagonal_move_boolean = abs(cls.column_difference(source,dest)) == 1 and abs(cls.row_difference(source,dest)) == 1
+        #Check if pawn move is forward
+        forward_movement_boolean = cls.row_difference(source,dest) == 1 if white_to_play else cls.row_difference(source,dest) == -1
+        #Check if destination square is not empty
+        capture_boolean = dest_piece is not None and dest_piece._is_white != white_to_play
+        #returns true if pawn capture is valid move
+        return diagonal_move_boolean and forward_movement_boolean and capture_boolean
+
+    @classmethod
+    def check_pawn_en_passant(cls, move, board, white_to_play):
+        source = cls.get_source_pos(move)
+        dest = cls.get_dest_pos(move)
+        dest_piece = board.get(dest)
+        #Check if pawn move is diagonal
+        diagonal_move_boolean = abs(cls.column_difference(source,dest)) == 1 and abs(cls.row_difference(source,dest)) == 1
+        #Check if pawn move is forward
+        forward_movement_boolean = cls.row_difference(source,dest) == 1 if white_to_play else cls.row_difference(source,dest) == -1
+        #Check if destination square is empty
+        dest_square_is_empty = dest_piece is None
+        #Check if adjacent piece is enemy pawn that just moved
+        enemy_piece_boolean = cls.check_adjacent_piece(move, board, white_to_play)
+        #returns true if proposed en passant is valid move
+        return diagonal_move_boolean and \
+                forward_movement_boolean and \
+                dest_square_is_empty and \
+                enemy_piece_boolean
+    
+    @classmethod
+    def check_adjacent_piece(cls, move, board, white_to_play):
+        source = cls.get_source_pos(move)
+        dest = cls.get_dest_pos(move)
+        horizontal_difference = cls.column_difference(source, dest)
+        #Get adjacent square
+        adj_square = chr(ord(source[0]) + horizontal_difference) + source[1]
+        #Get piece on adjacent square
+        adj_piece = board.get(adj_square)
+        #Check if piece is enemy pawn that just moved
+        adj_piece_is_enemy_pawn_that_just_moved = adj_piece is not None and \
+                                    adj_piece.type_enum() == 1 and \
+                                    adj_piece._is_white != white_to_play and \
+                                    adj_piece._just_moved
+        ## Returns true if en passant conditions hold
+        return adj_piece_is_enemy_pawn_that_just_moved
+
+    @classmethod
+    def check_castle(cls, move, board, white_to_play):
+        pass
+
+    @classmethod
+    def check_checkmate(cls, move, board, white_to_play):
+        pass
+
+    @classmethod
+    def check_stalemate(cls, move, board, white_to_play):
+        pass
+
+    @classmethod
+    def check_promotion(cls, move, board, white_to_play):
+        pass
+    @classmethod
+    def check_draw(cls, move, board, white_to_play):
+        pass
+
+    @classmethod
+    def check_insufficient_material(cls, move, board, white_to_play):
+        pass
+
+    
+
