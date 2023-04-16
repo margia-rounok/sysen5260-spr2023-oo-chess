@@ -411,6 +411,27 @@ class Game:
     #     return dest_piece is None or \
     #     dest_piece._is_white == self.white_to_play 
 
+    def do_backup(self, move): 
+        self.pop_list()
+        move_list = self.display()
+        piece_list = self.display_piece_list()
+        piece_list_length = len(piece_list)
+        move_list_length = len(move_list)
+        if move_list_length == 0:
+            print("Must Make a move first!")
+        else:
+            self.white_to_play = not self.white_to_play
+            prev_move = move_list[move_list_length-1]
+            prev_piece = piece_list[piece_list_length-1]
+            dest = self.get_source_pos(prev_move)
+            source = self.get_dest_pos(prev_move)
+            # Need to check if piece was captured, if true respawn piece
+            dest_piece = self.get_dest_piece(source)
+            self.board.set(source, prev_piece)
+            self.board.set(dest, dest_piece)
+            self.pop_list()
+        #print("this will backup move")
+
     def check_no_piece_override(self,move):
         # true if no override
         dest = self.get_dest_pos(move)
@@ -536,167 +557,3 @@ class Game:
         #setting up king
         self.board.set('e1', King(is_white=True))
         self.board.set('e8', King(is_white=False))
-
-
-
-class Rules:
-    def __init__(self):
-        pass
-
-    @classmethod
-    def get_source_pos(self, move):
-        return move[:2]
-    @classmethod
-    def get_dest_pos(self, move):
-        return move[2:]
-    @classmethod
-    def column_difference(cls, source, dest):
-        return ord(source[0]) - ord(dest[0])
-    @classmethod
-    def row_difference(cls, source, dest):
-        return int(source[1]) - int(dest[1])
-
-    @classmethod
-    def check_move(cls, move, board, white_to_play):
-        """Check if a move is valid using all the rules of chess.
-        Returns a tuple of (is_valid, reason).
-        """
-
-        source = cls.get_source_pos(move)
-        dest = cls.get_dest_pos(move)
-        source_piece = board.get(source)
-        dest_piece = board.get(dest)
-
-        # check if source piece is valid
-        if source_piece is None:
-            return (False,'No piece at source position.')
-        
-        # check if source piece is the right color
-        if source_piece._is_white != white_to_play:
-            return (False, 'Wrong color piece at source position.')
-        
-        # check if dest piece is the same color
-        if dest_piece is not None and dest_piece._is_white == white_to_play:
-            return (False, 'Wrong color piece at destination position.')
-        
-        # get valid moves for source piece
-        valid_moves = source_piece.valid_moves(source)
-
-        #check if move is a pawn special case
-        if(source_piece.type_enum() ==1 and cls.check_pawn_special_cases(move, board, white_to_play)):
-            #add pawn special cases to valid moves if conditions hold
-            valid_moves.append(move)
-
-        #check if move is a castle
-        if(source_piece.type_enum() == 6 and cls.check_castle(move, board, white_to_play)):
-            #add castle to valid moves if conditions hold
-            valid_moves.append(move)
-
-        #check if move is a valid move according to piece movement rules
-        if dest not in valid_moves:
-            return (False, 'Invalid move for piece.')
-        
-        #check if move puts own king in check
-        if cls.check_king_in_check(move, board, white_to_play):
-            return False
-        return True
-    
-    @classmethod
-    def check_pawn_special_cases(cls, move, board, white_to_play):
-        #Returns true if move is a pawn special case (en passant or capture)
-        return cls.check_pawn_capture(move, board, white_to_play) or cls.check_pawn_en_passant(move, board, white_to_play)
-    
-    @classmethod
-    def check_king_in_check(cls, move, board, white_to_play):
-        source = cls.get_source_pos(move)
-        dest = cls.get_dest_pos(move)
-        board.move_piece(source, dest)
-        if white_to_play:
-            king_pos = board.king_location(is_white=True)
-        else:
-            king_pos = board.king_location(is_white=True)
-        enemy_pieces_loc = board.get_piece(not white_to_play)
-        for loc in enemy_pieces_loc:
-            enemy_piece = board.get_source_piece(loc)
-            enemy_movements = enemy_piece.valid_moves(loc)
-            if king_pos in enemy_movements:
-                board.move_piece(dest, source)
-                return True
-        board.move_piece(dest, source)
-        return False
-
-    @classmethod
-    def check_pawn_capture(cls, move, board, white_to_play):
-        source = cls.get_source_pos(move)
-        dest = cls.get_dest_pos(move)
-        dest_piece = board.get(dest)
-        #Check if pawn move is diagonal
-        diagonal_move_boolean = abs(cls.column_difference(source,dest)) == 1 and abs(cls.row_difference(source,dest)) == 1
-        #Check if pawn move is forward
-        forward_movement_boolean = cls.row_difference(source,dest) == 1 if white_to_play else cls.row_difference(source,dest) == -1
-        #Check if destination square is not empty
-        capture_boolean = dest_piece is not None and dest_piece._is_white != white_to_play
-        #returns true if pawn capture is valid move
-        return diagonal_move_boolean and forward_movement_boolean and capture_boolean
-
-    @classmethod
-    def check_pawn_en_passant(cls, move, board, white_to_play):
-        source = cls.get_source_pos(move)
-        dest = cls.get_dest_pos(move)
-        dest_piece = board.get(dest)
-        #Check if pawn move is diagonal
-        diagonal_move_boolean = abs(cls.column_difference(source,dest)) == 1 and abs(cls.row_difference(source,dest)) == 1
-        #Check if pawn move is forward
-        forward_movement_boolean = cls.row_difference(source,dest) == 1 if white_to_play else cls.row_difference(source,dest) == -1
-        #Check if destination square is empty
-        dest_square_is_empty = dest_piece is None
-        #Check if adjacent piece is enemy pawn that just moved
-        enemy_piece_boolean = cls.check_adjacent_piece(move, board, white_to_play)
-        #returns true if proposed en passant is valid move
-        return diagonal_move_boolean and \
-                forward_movement_boolean and \
-                dest_square_is_empty and \
-                enemy_piece_boolean
-    
-    @classmethod
-    def check_adjacent_piece(cls, move, board, white_to_play):
-        source = cls.get_source_pos(move)
-        dest = cls.get_dest_pos(move)
-        horizontal_difference = cls.column_difference(source, dest)
-        #Get adjacent square
-        adj_square = chr(ord(source[0]) + horizontal_difference) + source[1]
-        #Get piece on adjacent square
-        adj_piece = board.get(adj_square)
-        #Check if piece is enemy pawn that just moved
-        adj_piece_is_enemy_pawn_that_just_moved = adj_piece is not None and \
-                                    adj_piece.type_enum() == 1 and \
-                                    adj_piece._is_white != white_to_play and \
-                                    adj_piece._just_moved
-        ## Returns true if en passant conditions hold
-        return adj_piece_is_enemy_pawn_that_just_moved
-
-    @classmethod
-    def check_castle(cls, move, board, white_to_play):
-        pass
-
-    @classmethod
-    def check_checkmate(cls, move, board, white_to_play):
-        pass
-
-    @classmethod
-    def check_stalemate(cls, move, board, white_to_play):
-        pass
-
-    @classmethod
-    def check_promotion(cls, move, board, white_to_play):
-        pass
-    @classmethod
-    def check_draw(cls, move, board, white_to_play):
-        pass
-
-    @classmethod
-    def check_insufficient_material(cls, move, board, white_to_play):
-        pass
-
-    
-
