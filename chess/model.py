@@ -367,8 +367,8 @@ class Game:
         self.board.set(dest, piece)
         self.board.set(source, None)
 
-    def move_history_append(self, move):
-        self.move_history.append(move)
+    def move_list_append(self, move):
+        self.move_list.append(move)
 
     def check_input(self, move):
         pattern = r"[a-h][1-8][a-h][1-8]"

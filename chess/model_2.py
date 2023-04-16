@@ -302,12 +302,24 @@ class King(Piece):
         path=[]
         return path
 
+class move_node:
+    def __init__(self, move=None):
+        self.move = move
+        self.next = None
+
+class piece_node:
+    def __init__(self, piece=None):
+        self.piece = piece
+        self.next = None
+
 class Game:
     def __init__(self):
         self.board = Board()
         self.white_to_play = True
         self.game_over = False
         self.move_history = []
+        self.head= move_node()
+        self.piece_head= piece_node()
 
     def get_board(self) -> Board:
         return self.board
@@ -315,6 +327,82 @@ class Game:
         return self.white_to_play
     def get_move_history(self) -> list[tuple[str, str]]:
         return self.move_history
+    def get_dest_pos(self, move: str) -> str:
+        return move[2:]
+    def get_dest_piece(self, dest: str):
+        return self.board.get(dest)
+    def get_source_pos(self, move: str) -> str:
+        return move[0:2]
+    def get_source_piece(self, source: str):
+        return self.board.get(source)
+    def get_source_type(self, move:str):
+        source_pos = self.get_source_pos(move)
+        # print(source_pos)
+        source_piece = self.get_source_piece(source_pos)
+        # print(source_piece.type_enum())
+        return source_piece.type_enum()
+
+    def do_backup(self, move): 
+        self.pop_list()
+        move_list = self.display()
+        piece_list = self.display_piece_list()
+        piece_list_length = len(piece_list)
+        move_list_length = len(move_list)
+        if move_list_length == 0:
+            print("Must Make a move first!")
+        else:
+            self.white_to_play = not self.white_to_play
+            prev_move = move_list[move_list_length-1]
+            prev_piece = piece_list[piece_list_length-1]
+            dest = self.get_source_pos(prev_move)
+            source = self.get_dest_pos(prev_move)
+            # Need to check if piece was captured, if true respawn piece
+            dest_piece = self.get_dest_piece(source)
+            self.board.set(source, prev_piece)
+            self.board.set(dest, dest_piece)
+            self.pop_list()
+        #print("this will backup move")
+
+    def move_list_append(self, move):
+        new_move_node = move_node(move)
+        dest = self.get_dest_pos(move)
+        new_piece_node = piece_node(self.get_dest_piece(dest))
+        cur_move = self.head
+        cur_piece = self.piece_head
+        while cur_move.next != None:
+            cur_move = cur_move.next
+            cur_piece = cur_piece.next
+        cur_move.next = new_move_node
+        cur_piece.next = new_piece_node
+
+    def pop_list(self):
+        cur_move_node = self.head
+        cur_piece_node = self.piece_head
+        while cur_move_node.next:
+            if cur_move_node.next.next == None:
+                cur_move_node.next = None
+                cur_piece_node.next = None
+            else:
+                cur_move_node = cur_move_node.next
+                cur_piece_node = cur_piece_node.next
+        return cur_move_node, cur_piece_node
+    
+    def display(self):
+        elems = []
+        cur_node = self.head
+        while cur_node.next != None:
+            cur_node = cur_node.next
+            elems.append(cur_node.move)
+        return elems
+    
+    def display_piece_list(self):
+        elems = []
+        cur_node = self.piece_head
+        while cur_node.next != None:
+            cur_node = cur_node.next
+            elems.append(cur_node.piece)
+        print("piece elems: ", elems)
+        return elems
     
     def move_piece(self, source: str, dest: str):
         """Move piece from source to destination.
