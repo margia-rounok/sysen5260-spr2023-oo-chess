@@ -69,7 +69,7 @@ Following the best practices of object-oriented programming, we want to design
  model updates the state of the game, it should be reflected in the user 
  interface. 
 
-`TODO: A class-diagram documenting the classes in the system`
+![Class Diagram](class_diagram.jpg)
 
 ### User Interface Module
 The board is a two-dimensional square represented by two axis. The x-axis is 
@@ -177,10 +177,10 @@ The game play module integrates everything together. While the game is still
  exists any error, it will prompt the user to re-enter a valid command until it
  breaks out of the first while True loop. 
 
- `TODO: object-diagram depicting a chess-game after several moves`
+![Object-diagram](object_diagram.jpg)
 
- `TODO: interaction diagram for invalid moves`
- `TODO: interaction diagram for valid moves`
+![Interaction diagram for valid moves](idvm.jpg)
+![Interaction diagram for invalid moves](idim.jpg)
 
 ## Testing
 The testing is primarily done through unit tests. These unit tests test that
@@ -191,4 +191,3 @@ The testing is primarily done through unit tests. These unit tests test that
 ## Future Work
 Future work would make the game more chess like. Examples can include adding
  a timed game, playing against an AI, and other tournament-style features. 
- 
