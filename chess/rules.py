@@ -1,3 +1,4 @@
+import re
 
 class Rules:
     def __init__(self):
@@ -30,6 +31,9 @@ class Rules:
         # check if source piece is the right color
         if source_piece._is_white != white_to_play:
             return (False, 'Wrong color piece at source position.',captured_piece_location)
+        
+        if cls.check_input(move) is None:
+            return (False, 'Enter a valid command.',captured_piece_location)
 
         # check if dest piece is the same color
         if dest_piece is not None and dest_piece._is_white == white_to_play:
@@ -178,6 +182,11 @@ class Rules:
     @classmethod
     def get_dest_pos(self, move):
         return move[2:]
+
+    @classmethod
+    def check_input(self, move):
+        pattern = r"[a-h][1-8][a-h][1-8]"
+        return re.match(pattern, move)
 
     @classmethod
     def vertical_difference(cls, source, dest):

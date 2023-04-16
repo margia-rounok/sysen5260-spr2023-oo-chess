@@ -7,6 +7,7 @@ rules = rules.Rules()
 game = model.Game()
 game.set_up_pieces()
 
+board_lst = []
 while not game.game_over:
     print("")
     print(view.board_to_text(game.board))
@@ -16,5 +17,9 @@ while not game.game_over:
 
     if legal_move:
         game.accept_move(move,captured_piece_location)
+        board_lst.append(game.board)
+    elif move == 'backup':
+        game.do_backup(move)
+        break
     else:
         print(message)
