@@ -1,5 +1,5 @@
-import chess.model_2 as model
-import chess.view_2 as view
+import chess.model as model
+import chess.view as view
 
 import chess.rules as rules
 
