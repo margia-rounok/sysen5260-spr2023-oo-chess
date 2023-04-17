@@ -314,8 +314,6 @@ def test_rook_valid_multiple_horizontal_moves():
     assert message == 'Path is not clear.'
     assert captured_piece_location == None
 
-
-
 def test_pawn_capture_en_passant():
     # Arrange
     game = Game()
@@ -335,7 +333,6 @@ def test_pawn_capture_en_passant():
     assert message == 'Valid move.'
     assert captured_piece_location == 'e5'
 
-
 def test_castle_king_side():
     # Arrange
     game = Game()
@@ -346,7 +343,6 @@ def test_castle_king_side():
     game.accept_move('b8c6',None)
     game.accept_move('g1f3',None)
     game.accept_move('g8f6',None)
-
 
     move = 'e1g1'
 
