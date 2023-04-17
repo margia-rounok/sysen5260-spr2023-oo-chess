@@ -380,3 +380,30 @@ def test_castle_queen_side():
     assert legal_move == True
     assert message == 'Valid move.'
     assert captured_piece_location == None
+
+
+def test_castle_king_side_invalid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('f1c4',None)
+    game.accept_move('b8c6',None)
+    game.accept_move('g1f3',None)
+    game.accept_move('g8f6',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('e8e7',None)
+    game.accept_move('e2e1',None)
+    game.accept_move('e7e8',None)
+
+    move = 'e1g1'
+
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Invalid move for piece.'
+    assert captured_piece_location == None

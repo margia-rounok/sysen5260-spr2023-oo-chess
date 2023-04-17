@@ -61,8 +61,9 @@ class Rules:
         #check if move is a castle
         if(source_piece.type_enum == 6 and cls.is_castle_move(move)):
             castling_is_legal  = cls.check_castle(move, board, white_to_play)
+            if castling_is_legal:
             #add castle to valid moves if conditions hold
-            valid_moves.append(move[2:])
+                valid_moves.append(move[2:])
 
         #check if move is a valid move according to piece movement rules
         if dest not in valid_moves:
