@@ -247,7 +247,7 @@ def test_biscop_invalid_multiple_backward_moves():
     assert message == 'Path is not clear.'
     assert captured_piece_location == None
 
-def test_biscop_valid_multiple_vertical_moves():
+def test_rook_valid_multiple_vertical_moves():
     # Arrange
     game = Game()
     game.set_up_pieces()
@@ -263,7 +263,7 @@ def test_biscop_valid_multiple_vertical_moves():
     assert message == 'Valid move.'
     assert captured_piece_location == None
 
-def test_biscop_valid_multiple_horizontal_moves():
+def test_rook_valid_multiple_horizontal_moves():
     # Arrange
     game = Game()
     game.set_up_pieces()
@@ -280,7 +280,7 @@ def test_biscop_valid_multiple_horizontal_moves():
     assert message == 'Valid move.'
     assert captured_piece_location == None
 
-def test_biscop_invalid_multiple_vertical_moves():
+def test_rook_invalid_multiple_vertical_moves():
     # Arrange
     game = Game()
     game.set_up_pieces()
@@ -296,19 +296,20 @@ def test_biscop_invalid_multiple_vertical_moves():
     assert message == 'Path is not clear.'
     assert captured_piece_location == None
 
-# def test_biscop_valid_multiple_horizontal_moves():
-#     # Arrange
-#     game = Game()
-#     game.set_up_pieces()
-#     game.make_normal_move("a2", "a6") # skips valid mult pawn movements
-#     game.make_normal_move("a1", "a4") # rook moves vertically
+def test_rook_valid_multiple_horizontal_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("a2", "a4") 
+    game.make_normal_move("b2", "b3") 
+    game.make_normal_move("a1", "a3") 
 
-#     move = "a4b4" # rook moves horizontally
+    move = "a3c3" # rook moves horizontally
 
-#     # Act
-#     legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
-#     # Assert
-#     assert legal_move == False
-#     assert message == 'Path is not clear.'
-#     assert captured_piece_location == None
+    # Assert
+    assert legal_move == False
+    assert message == 'Path is not clear.'
+    assert captured_piece_location == None
