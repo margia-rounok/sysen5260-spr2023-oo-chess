@@ -334,3 +334,49 @@ def test_pawn_capture_en_passant():
     assert legal_move == True
     assert message == 'Valid move.'
     assert captured_piece_location == 'e5'
+
+
+def test_castle_king_side():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('f1c4',None)
+    game.accept_move('b8c6',None)
+    game.accept_move('g1f3',None)
+    game.accept_move('g8f6',None)
+
+
+    move = 'e1g1'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_castle_queen_side():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('c1f4',None)
+    game.accept_move('b8c6',None)
+    game.accept_move('b1c3',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('d1d2',None)
+    game.accept_move('g8f6',None)
+
+    move = 'e1c1'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
