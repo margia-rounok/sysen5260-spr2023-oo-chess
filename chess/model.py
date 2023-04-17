@@ -104,10 +104,12 @@ class Pawn(Piece):
         moves=[]
         if self._is_white:
             moves.append(f'{current_position[0]}{int(current_position[1])+1}')
+            moves.append(f'{chr(ord(current_position[0])+1)}{int(current_position[1])+1}')
             if current_position[1] == '2':
                 moves.append(f'{current_position[0]}{int(current_position[1])+2}')
         else:
             moves.append(f'{current_position[0]}{int(current_position[1])-1}')
+            moves.append(f'{chr(ord(current_position[0])-1)}{int(current_position[1])-1}')
             if current_position[1] == '7':
                 moves.append(f'{current_position[0]}{int(current_position[1])-2}')
         valid_moves = self.discard_invalid_moves(moves)
@@ -115,7 +117,6 @@ class Pawn(Piece):
 
     def get_path(self, current_position: str, destination: str) -> list[str]:
         """Return a list of squares traversed by this piece from current_position to destination."""
-        
         path=[]
         if self._is_white:
             if int(current_position[1])+1 == int(destination[1]):
@@ -522,7 +523,6 @@ class Game:
         if(piece.type_enum==1 and abs(int(dest[1])-int(source[1]))==2):
             piece.just_moved_two_squares=True
 
-
     def make_normal_move(self, source: str, dest: str):
         """Make a normal move."""
         piece = self.board.get(source)
@@ -655,3 +655,6 @@ class Game:
 
         self.board_head = Node(self.board.duplicate())
         
+
+
+

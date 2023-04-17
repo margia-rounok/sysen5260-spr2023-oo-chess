@@ -4,7 +4,6 @@ class Rules:
     def __init__(self):
         pass
 
-
     @classmethod
     def validate_move(cls, move, game):
         """Check if a move is valid using all the rules of chess.
@@ -74,7 +73,6 @@ class Rules:
             return (False, 'Move puts own king in check.',captured_piece_location)
         return (True, 'Valid move.', captured_piece_location)
     
-
     @classmethod
     def is_castle_move(cls, move):
         """Check if a move is a castle move."""
