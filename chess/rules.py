@@ -23,6 +23,8 @@ class Rules:
         else:
             captured_piece_location = None
 
+        if cls.check_input(move) is None:
+            return (False, 'Enter a valid command.',captured_piece_location)
 
         # check if source piece is valid
         if source_piece is None:
@@ -32,9 +34,6 @@ class Rules:
         if source_piece._is_white != white_to_play:
             return (False, 'Wrong color piece at source position.',captured_piece_location)
         
-        if cls.check_input(move) is None:
-            return (False, 'Enter a valid command.',captured_piece_location)
-
         # check if dest piece is the same color
         if dest_piece is not None and dest_piece._is_white == white_to_play:
             return (False, 'Wrong color piece at destination position.',captured_piece_location)
