@@ -5,6 +5,47 @@ from chess.rules import Rules
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 numbers = ['1', '2', '3', '4', '5', '6', '7', '8']
 
+def test_invalid_cmd():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    move = 'r3454r4343'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Enter a valid command.'
+    assert captured_piece_location == None
+
+def test_no_piece():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    move = 'e3e4'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'No piece at source position.'
+    assert captured_piece_location == None
+
+def test_move_opponent_piece():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    move = 'e7e6'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Wrong color piece at source position.'
+    assert captured_piece_location == None
 
 def test_pawn_move_one_square_forward():
     # Arrange
@@ -96,3 +137,178 @@ def test_pawn_capture_diagonally_to_empty_square():
     assert legal_move == False
     assert message == 'Invalid move for piece.'
     assert captured_piece_location == None
+
+def test_king_in_check():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("d2", "d4")
+    game.make_normal_move("e7", "e5")
+    game.make_normal_move("b1", "c3")
+    game.make_normal_move("f8", "b4")
+
+    move = "c3d5"
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Move puts own king in check.'
+    assert captured_piece_location == None
+
+def test_path_obstructed_move():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+
+    move = 'c1e3'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Path is not clear.'
+    assert captured_piece_location == None
+
+def test_king_in_check():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("d2", "d4")
+    game.make_normal_move("e7", "e5")
+    game.make_normal_move("b1", "c3")
+    game.make_normal_move("f8", "b4")
+
+    move = "c3d5"
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Move puts own king in check.'
+    assert captured_piece_location == None
+
+def test_biscop_valid_multiple_forward_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("d2", "d4")
+    game.make_normal_move("e7", "e5")
+
+    move = "c1f4"
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_biscop_valid_multiple_backward_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("d2", "d4")
+    game.make_normal_move("e7", "e5")
+    game.make_normal_move("c1", "f4")
+
+    move = "f4d2"
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_biscop_invalid_multiple_backward_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("d2", "d4")
+    game.make_normal_move("e7", "e5")
+    game.make_normal_move("c1", "f4")
+    game.make_normal_move("a7", "a5")
+    game.make_normal_move("d1", "d2")
+    game.make_normal_move("h7", "h6")
+
+    move = "f4c1"
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Path is not clear.'
+    assert captured_piece_location == None
+
+def test_biscop_valid_multiple_vertical_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("a2", "a6") # skips valid mult pawn movements
+
+    move = "a1a4"
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_biscop_valid_multiple_horizontal_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("a2", "a6") # skips valid mult pawn movements
+    game.make_normal_move("a1", "a4") # rook moves vertically
+
+    move = "a4b4" # rook moves horizontally
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_biscop_invalid_multiple_vertical_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.make_normal_move("a2", "a6") # skips valid mult pawn movements
+    game.make_normal_move("b1", "a3")
+    move = "a1a4"
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Path is not clear.'
+    assert captured_piece_location == None
+
+# def test_biscop_valid_multiple_horizontal_moves():
+#     # Arrange
+#     game = Game()
+#     game.set_up_pieces()
+#     game.make_normal_move("a2", "a6") # skips valid mult pawn movements
+#     game.make_normal_move("a1", "a4") # rook moves vertically
+
+#     move = "a4b4" # rook moves horizontally
+
+#     # Act
+#     legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+#     # Assert
+#     assert legal_move == False
+#     assert message == 'Path is not clear.'
+#     assert captured_piece_location == None
