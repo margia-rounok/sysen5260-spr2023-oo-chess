@@ -96,3 +96,24 @@ def test_pawn_capture_diagonally_to_empty_square():
     assert legal_move == False
     assert message == 'Invalid move for piece.'
     assert captured_piece_location == None
+
+
+def test_pawn_capture_en_passant():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    captured_pawn = Pawn(is_white=False)
+    captured_pawn.has_moved = True
+    captured_pawn.just_moved_two_squares = True
+    game.board.set('d5', Pawn(is_white=True))
+    game.board.set('e5', captured_pawn)
+
+    move = 'd5e6'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == 'e5'
