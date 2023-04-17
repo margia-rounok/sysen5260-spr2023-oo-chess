@@ -22,3 +22,9 @@ From within a running container, execute:
 ```
 pytest tests
 ```
+
+To test coverage, execute:
+
+```
+pytest --cov
+```

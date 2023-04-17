@@ -60,14 +60,14 @@ This project creates a basic game of chess. Some more advanced features of chess
 
 ## Design
 Following the best practices of object-oriented programming, we want to design 
- the system to reduce coupling. Our game is split into three main parts: the
- user interface module, the chess model module, and a game play module. The user
- interface module describes how the chess board and pieces are displayed. The 
- chess model module should implement the logic for each piece and general chess
- game logic (e.g. moving the pieces, detecting illegal moves, etc.). The game 
- play module integrates the aforementioned two modules: everytime the chess 
- model updates the state of the game, it should be reflected in the user 
- interface. 
+ the system to reduce coupling. Our game is split into four main parts: the
+ user interface module, the rules module, the chess model module, and a 
+ game play module. The user interface module describes how the chess board and 
+ pieces are displayed. The chess model module should implement the logic for 
+ each piece and general chessgame logic (e.g. moving the pieces, detecting 
+ illegal moves, etc.). The game play module integrates the aforementioned 
+ two modules: everytime the chess model updates the state of the game, it 
+ should be reflected in the user interface. 
 
 ![Class Diagram](class_diagram.jpg)
 
@@ -79,6 +79,16 @@ The board is a two-dimensional square represented by two axis. The x-axis is
  unicode character and an empty position should be shown by a neutral character
  (e.g. a dot, dash, etc.). Pieces should also be colored to display which piece
  belongs to which player. 
+
+### Rules Module
+The Rules module ensures that all the necessary checks are met before 
+ making a respective move in the game (which is then reflected in the board). 
+ These rules are common checks, such as ensuring that source pieces exist, pieces
+ don't override the same color pieces, etc. This allows us to separate the rules 
+ of the game from the actual game state. Moreover, this provides us flexibility 
+ in adding additional checks and functionalities without having to refactor
+ code in any of the other models. Therefore, changes to rules are contained
+ within the rules module. 
 
 ### Chess Model Module
 The chess model module has two main functions: describe the behaviors of chess 
@@ -100,22 +110,22 @@ The chess pieces module describes the behavior for each piece. We will first
  piece's rules.  
 
 #### Chess Model
-The chess model module carries the logic for the entire chess game. It 
- checks that the pieces don't override same colored pieces, checks that for 
- certain pieces (e.g. pawn, bischop, etc.) there is no other piece in between 
- the source and destination, and moves the pieces in the board object. The
+The chess model module carries the movement logic for the entire chess game. The
  general movement rule should be to check that the piece's destination is valid
  and the path to the destination is valid before accepting the move and 
- reflecting the movement on the board. 
+ reflecting the movement on the board (from the Check module). Moreover, for 
+ special movements like en passant and castling, it is useful to know the state
+ of the board and other respective pieces to decide when and where to move. 
+ Thus, in the case of movements that require additional state checking, those
+ movements will be checked and done in the chess model.  
 
 ### Game Play Module
 The game play module integrates the chess model and chess pieces with the user 
  interface. The game play module should first check if there are any errors 
- coming from the chess module. If so, it should prompt the user that the inputted
+ coming from the Rules module. If so, it should prompt the user that the inputted
  move is invalid until the user enters a move that's valid according to the chess
- model's logic. Once the proper When this does occur, the system should exit the 
- loop of prompting for a proper move, and should ask the move for the next 
- player. 
+ model's logic. When this does occur, the system should exit prompting for a 
+ proper move, and should ask the move for the next player. 
 
 ## Implementation
 The implementation of chess in Python will be done through classes. Each class
@@ -131,6 +141,14 @@ The user interface module is view.py. In the view class, there is a dictionary
  (board_to_text). This will help us to print the board in the terminal. Finally, 
  a piece_to_char function will return the respective unicode representation of 
  a piece. This is helpful for debugging in the terminal. 
+
+
+### Rules Module
+The Rules module does the general checking before accepting the move in the Game
+ class. Rules such as checking if source piece is valid, checking if source 
+ piece is the right color, checking that input matches the intended form, 
+ checking if dest piece is the same color are some common checks that can be done
+ each time in the beginning of each move. 
 
 ### Chess Model Module
 The chess model module has two components: chess pieces and game logic. 
@@ -162,20 +180,17 @@ The chess model logic is also in model.py. This class begins with a Board class,
  The chess model also has a Game class. In the game class, there is a Board, a 
   boolean flag white_to_play (determinign whose turn it is), a boolean game_over
   flag, and two pointers to help with determining the past states of the game. 
-  This model implements the logic of chess. For each move, it checks if that 
-  move is valid (by callid the valid_moves function for each piece). If that
-  move is valid, it then checks that the path to that destination is valid.
-  If so, then it sets the board accordingly. There are also other conditions
-  that it checks for (e.g. valid commands, valid source locations, checks, etc.). 
-
+  This model implements the logic of chess.  If a given move is valid (from the
+  Rules module), it then makes the move and updates the board to reflect the new
+  state. 
 
 ### Game Play Module
 The game play module integrates everything together. While the game is still 
  running, that is, the game_over has not been set, the system prompts the user 
- for a valid move. Then it goes into a while True loop to check that the command
- is valid, the move is valid, and the kign isn't in check or checkmated. If there
- exists any error, it will prompt the user to re-enter a valid command until it
- breaks out of the first while True loop. 
+ for a valid move. Then it goes into the Rules module to check that the command
+ is valid and that the move is valid. If there exists any error, it will 
+ prompt the user to re-enter a valid command until it the Rules module detects
+ that the logic is correct. 
 
 ![Object-diagram](object_diagram.jpg)
 

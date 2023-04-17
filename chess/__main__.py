@@ -8,13 +8,19 @@ game = model.Game()
 game.set_up_pieces()
 
 board_lst = []
+board_lst.insert(0, game.board)
+# print(view.board_to_text(board_lst[0]))
+
 while not game.game_over:
     print("")
+    print("debug old board")
     print(view.board_to_text(game.board))
     prompt = "White to play:" if game.white_to_play else "Black to play:"
     move = input(prompt)
     legal_move, message, captured_piece_location = rules.validate_move(move, game)
-    
+    game.move_list_append(move)
+    board_lst.insert(0, game.board)
+    # print(view.board_to_text(board_lst[0]))
     if legal_move:
         #game.move_list_append(move)
         print("appended to node list")
@@ -25,10 +31,7 @@ while not game.game_over:
         
         # board_lst.prepend(game.board)
     elif move == 'backup':
-        # game.do_backup(move)
-        print('backup is triggered')
-        
-        game.reverse_game_state()
+        game.do_backup(move)
         # game.board = board_lst[0]
         # print(view.board_to_text(game.board))
         # break

@@ -223,23 +223,21 @@ class Rules:
                         return True
         return False
 
-    @classmethod
-    def check_checkmate(cls, move, board, white_to_play):
-        pass
+    # @classmethod
+    # def check_checkmate(cls, move, board, white_to_play):
+    #     pass
 
-    @classmethod
-    def check_stalemate(cls, move, board, white_to_play):
-        pass
+    # @classmethod
+    # def check_stalemate(cls, move, board, white_to_play):
+    #     pass
 
-    @classmethod
-    def check_promotion(cls, move, board, white_to_play):
-        pass
-    @classmethod
-    def check_draw(cls, move, board, white_to_play):
-        pass
+    # @classmethod
+    # def check_promotion(cls, move, board, white_to_play):
+    #     pass
+    # @classmethod
+    # def check_draw(cls, move, board, white_to_play):
+    #     pass
 
-    @classmethod
-    def check_insufficient_material(cls, move, board, white_to_play):
-        pass
-
-
+    # @classmethod
+    # def check_insufficient_material(cls, move, board, white_to_play):
+    #     pass

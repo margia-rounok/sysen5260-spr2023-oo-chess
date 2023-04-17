@@ -1,6 +1,6 @@
 # import pytest
-from chess import rules
 from chess.model_2 import Game, Board, Piece, Pawn, Rook, Knight, Bishop, Queen, King
+from chess.rules import Rules 
 
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
 numbers = ['1', '2', '3', '4', '5', '6', '7', '8']
@@ -13,11 +13,11 @@ def test_pawn_move_one_square_forward():
     move = 'e2e4'
 
     # Act
-    legal_move, message, captured_piece_location = rules.validate_move(move, game)
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
     # Assert
     assert legal_move == True
-    assert message == None
+    assert message == 'Valid move.'
     assert captured_piece_location == None
 
 def test_pawn_move_two_squares_forward():
@@ -27,11 +27,11 @@ def test_pawn_move_two_squares_forward():
     move = 'e2e4'
 
     # Act
-    legal_move, message, captured_piece_location = rules.validate_move(move, game)
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
     # Assert
     assert legal_move == True
-    assert message == None
+    assert message == 'Valid move.'
     assert captured_piece_location == None
 
 def test_pawn_move_one_square_forward_to_occupied_square():
@@ -43,12 +43,12 @@ def test_pawn_move_one_square_forward_to_occupied_square():
     move = 'e2e3'
 
     # Act
-    legal_move, message, captured_piece_location = rules.validate_move(move, game)
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
     # Assert
-    assert legal_move == True
-    assert message == None
-    assert captured_piece_location == None
+    assert legal_move == False
+    assert message == 'Wrong color piece at destination position.'
+    assert captured_piece_location == 'e3'
 
 def test_pawn_move_two_squares_forward_to_occupied_square():
     # Arrange
@@ -59,12 +59,12 @@ def test_pawn_move_two_squares_forward_to_occupied_square():
     move = 'e2e4'
 
     # Act
-    legal_move, message, captured_piece_location = rules.validate_move(move, game)
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
     # Assert
     assert legal_move == False
-    assert message == 'ERROR: Improper destination move. Please try again.'
-    assert captured_piece_location == None
+    assert message == 'Wrong color piece at destination position.'
+    assert captured_piece_location == 'e4'
 
 def test_pawn_capture_diagonally():
     # Arrange
@@ -75,12 +75,12 @@ def test_pawn_capture_diagonally():
     move = 'e2d3'
 
     # Act
-    legal_move, message, captured_piece_location = rules.validate_move(move, game)
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
     # Assert
     assert legal_move == True
-    assert message == None
-    assert captured_piece_location == 'd4'
+    assert message == 'Valid move.'
+    assert captured_piece_location == 'd3'
 
 def test_pawn_capture_diagonally_to_empty_square():
     # Arrange
@@ -90,9 +90,9 @@ def test_pawn_capture_diagonally_to_empty_square():
     move = 'e2d3'
 
     # Act
-    legal_move, message, captured_piece_location = rules.validate_move(move, game)
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
     # Assert
     assert legal_move == False
-    assert message == 'ERROR: Improper destination move. Please try again.'
+    assert message == 'Invalid move for piece.'
     assert captured_piece_location == None
