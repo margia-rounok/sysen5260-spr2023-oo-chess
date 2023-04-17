@@ -14,7 +14,7 @@ class Board:
     def move(self, source:str, dest:str):
         piece = self.get(source)
         self.set(source, None)
-        self.set(dest, piece)
+        self.set(dest, piece)   
 
     def king_location(self, is_white: bool) -> str:
         for location, piece in self._squares.items():
@@ -28,6 +28,14 @@ class Board:
             if piece is not None and piece._is_white == is_white:
                 locations.append(location)
         return locations
+
+    def duplicate(self):
+        new_board = Board()
+        for location, piece in self._squares.items():
+            new_board.set(location, piece.duplicate() if piece is not None else None)
+        print('duplicating board')
+        print('new_board', new_board)
+        return new_board
 
 class Piece:
     """Abstract base class for chess pieces."""
@@ -51,6 +59,9 @@ class Piece:
     def get_path(self, source: str, dest: str) -> list[str]:
         path = []
         return path
+    
+    def duplicate(self) -> 'Piece':
+        return Piece(self._is_white)
     
     def discard_invalid_moves(self, positions: list[str]) -> list[str]:
         ## Discard moves (positions) that are off the board
@@ -76,16 +87,28 @@ class Pawn(Piece):
     def type_enum(self) -> int:
         return 1
     
+    def duplicate(self) -> 'Pawn':
+        new_pawn = Pawn(self._is_white)
+        new_pawn.has_moved = self.has_moved == True
+        new_pawn.just_moved_two_squares = self.just_moved_two_squares == True
+        # print('duplicating pawn')
+
+        # print('old_pawn', self)
+        # print('self.has_moved', self.has_moved)
+        # print('new_pawn', new_pawn)
+        # print('new_pawn.has_moved', new_pawn.has_moved)
+        return new_pawn
+    
     def valid_moves(self, current_position: str) -> list[str]:
         """Return a list of valid moves for this piece."""
         moves=[]
         if self._is_white:
             moves.append(f'{current_position[0]}{int(current_position[1])+1}')
-            if self.has_moved is False:
+            if current_position[1] == '2':
                 moves.append(f'{current_position[0]}{int(current_position[1])+2}')
         else:
             moves.append(f'{current_position[0]}{int(current_position[1])-1}')
-            if self.has_moved is False:
+            if current_position[1] == '7':
                 moves.append(f'{current_position[0]}{int(current_position[1])-2}')
         valid_moves = self.discard_invalid_moves(moves)
         return valid_moves
@@ -116,6 +139,9 @@ class Bishop(Piece):
     @property
     def type_enum(self) -> int:
         return 2
+
+    def duplicate(self) -> 'Bishop':
+        return Bishop(self._is_white)
 
     def valid_moves(self, current_position: str) -> list[str]:
         """Return a list of valid moves for this piece."""
@@ -158,6 +184,9 @@ class Knight(Piece):
     @property
     def type_enum(self) -> int:
         return 3
+    
+    def duplicate(self) -> 'Knight':
+        return Knight(self._is_white)
 
     def valid_moves(self, current_position: str) -> list[str]:
         """Return a list of valid moves for this piece."""
@@ -184,7 +213,12 @@ class Rook(Piece):
     @property
     def type_enum(self) -> int:
         return 4
-    
+
+    def duplicate(self) -> 'Rook':
+        new_rook = Rook(self._is_white)
+        new_rook.has_moved = self.has_moved
+        return Rook(self._is_white)
+
     def valid_moves(self, current_position: str) -> list[str]:
         """Return a list of valid moves for this piece."""
         moves=[]
@@ -223,6 +257,9 @@ class Queen(Piece):
     @property
     def type_enum(self) -> int:
         return 5
+    
+    def duplicate(self) -> 'Queen':
+        return Queen(self._is_white)
 
     def valid_moves(self, current_position: str) -> list[str]:
 
@@ -283,6 +320,11 @@ class King(Piece):
     @property
     def type_enum(self) -> int:
         return 6
+    
+    def duplicate(self):
+        new_king = King(self._is_white)
+        new_king.is_in_check = self.is_in_check
+        return new_king
 
     def valid_moves(self, current_position: str) -> list[str]:
         """Return a list of valid moves for this piece."""
@@ -312,15 +354,22 @@ class piece_node:
         self.piece = piece
         self.next = None
 
+class Node:
+    def __init__(self,board=None):
+        self.board = board
+        self.prev = None
+        self.next = None
+
 class Game:
     def __init__(self):
         self.board = Board()
         self.white_to_play = True
         self.game_over = False
         self.move_history = []
-        self.head= move_node()
-        self.piece_head= piece_node()
-
+        # self.head= move_node()
+        # self.piece_head= piece_node()
+        self.board_head = None
+    
     def get_board(self) -> Board:
         return self.board
     def get_white_to_play(self) -> bool:
@@ -335,14 +384,51 @@ class Game:
         return move[0:2]
     def get_source_piece(self, source: str):
         return self.board.get(source)
+    
     def get_source_type(self, move:str):
         source_pos = self.get_source_pos(move)
         # print(source_pos)
         source_piece = self.get_source_piece(source_pos)
         # print(source_piece.type_enum())
         return source_piece.type_enum()
+    
+    def node_list_append(self,board):
 
-    def do_backup(self, move): 
+        copy_of_original_board = board.duplicate()
+        new_node = Node(copy_of_original_board)
+        new_node.prev = self.board_head
+        self.board_head = new_node      
+
+    def reverse_game_state(self):
+        if self.board_head.prev != None:
+            self.board_head = self.board_head.prev
+            self.board = self.board_head.board
+            self.white_to_play = not self.white_to_play
+            self.move_history.pop()
+            self.game_over = False
+
+    def print_e2_has_moved(self):
+        print("e2 has moved:", self.board.get("e2").has_moved)
+
+    def linked_list_length(self):
+        cur_node = self.board_head
+        total = 0
+        while cur_node != None:
+            total += 1
+            cur_node = cur_node.next
+        print(f"Linked List Length: {total}")
+        return total        
+        
+    def board_display(self):
+        print(f"Board now: {self.board}")
+
+    def update_board_pointer(self):
+        cur_node = self.board_head
+        while cur_node.next != None:
+            cur_node = cur_node.next
+        self.board = cur_node.board
+
+    def do_backup(self): 
         self.pop_list()
         move_list = self.display()
         piece_list = self.display_piece_list()
@@ -363,10 +449,13 @@ class Game:
             self.pop_list()
         #print("this will backup move")
 
+
     def move_list_append(self, move):
         new_move_node = move_node(move)
         dest = self.get_dest_pos(move)
-        new_piece_node = piece_node(self.get_dest_piece(dest))
+        dest_piece = self.get_dest_piece(dest)
+        has_moved = dest_piece.has_moved
+        new_piece_node = piece_node(self.get_dest_piece(dest),has_moved = has_moved)
         cur_move = self.head
         cur_piece = self.piece_head
         while cur_move.next != None:
@@ -380,6 +469,7 @@ class Game:
         cur_piece_node = self.piece_head
         while cur_move_node.next:
             if cur_move_node.next.next == None:
+                cur_piece_node.piece.has_moved = cur_piece_node.ne
                 cur_move_node.next = None
                 cur_piece_node.next = None
             else:
@@ -395,6 +485,7 @@ class Game:
             elems.append(cur_node.move)
         return elems
     
+   
     def display_piece_list(self):
         elems = []
         cur_node = self.piece_head
@@ -483,7 +574,6 @@ class Game:
         self.board.set(dest[0] + source[1], None)
         piece.has_moved = True
 
-
     def reset_pawn_just_moved_two(self):
         for col in 'abcdefgh':
             for row in '12345678':
@@ -562,3 +652,6 @@ class Game:
         #setting up king
         self.board.set('e1', King(is_white=True))
         self.board.set('e8', King(is_white=False))
+
+        self.board_head = Node(self.board.duplicate())
+        
