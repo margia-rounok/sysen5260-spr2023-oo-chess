@@ -320,11 +320,12 @@ def test_pawn_capture_en_passant():
     # Arrange
     game = Game()
     game.set_up_pieces()
-    captured_pawn = Pawn(is_white=False)
-    captured_pawn.has_moved = True
-    captured_pawn.just_moved_two_squares = True
-    game.board.set('d5', Pawn(is_white=True))
-    game.board.set('e5', captured_pawn)
+    game.make_normal_move("e2", "e4")
+    game.make_normal_move("d7", "d5")
+    game.make_normal_move("e4", "d5")
+    game.make_normal_move("e7", "e5")
+
+
 
     move = 'd5e6'
 
