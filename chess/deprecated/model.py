@@ -17,14 +17,7 @@ class Board:
         for location, piece in self._squares.items():
             if piece is not None and piece.type_enum() == 6 and piece._is_white == is_white:
                 return location
-        return ""
-
-    def duplicate(self) -> 'Board':
-        new_board = Board()
-        for location, piece in self._squares.items():
-            new_board.set(location, piece)
-        return new_board
-    
+        return "" 
 
 class Square:
     def __init__(self, location:str, piece: Optional['Piece'] = None):
