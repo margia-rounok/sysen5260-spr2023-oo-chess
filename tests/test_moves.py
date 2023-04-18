@@ -111,9 +111,10 @@ def test_pawn_capture_diagonally():
     # Arrange
     game = Game()
     game.set_up_pieces()
-    game.board.set('d3', Pawn(is_white=False))
+    game.accept_move('e2e4',game)
+    game.accept_move('d7d5',game)
 
-    move = 'e2d3'
+    move = 'e4d5'
 
     # Act
     legal_move, message, captured_piece_location = Rules.validate_move(move, game)
@@ -121,7 +122,7 @@ def test_pawn_capture_diagonally():
     # Assert
     assert legal_move == True
     assert message == 'Valid move.'
-    assert captured_piece_location == 'd3'
+    assert captured_piece_location == 'd5'
 
 def test_pawn_capture_diagonally_to_empty_square():
     # Arrange
@@ -605,4 +606,4 @@ def test_knight_invalid():
     # Assert
     assert legal_move == False
     assert message == 'Wrong color piece at destination position.'
-    assert captured_piece_location == None #bug
+    assert captured_piece_location == 'd2' #bug
