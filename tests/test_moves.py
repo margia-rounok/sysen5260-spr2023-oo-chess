@@ -606,4 +606,244 @@ def test_knight_invalid():
     # Assert
     assert legal_move == False
     assert message == 'Wrong color piece at destination position.'
-    assert captured_piece_location == 'd2' #bug
+
+def test_king_vertical_move_valid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+
+    move = 'e1e2'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_king_vertical_move_invalid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+
+    move = 'e1e3'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Invalid move for piece.'
+    assert captured_piece_location == None
+
+def test_king_horizontal_move_right_valid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+
+    move = 'e3f3'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_king_horizontal_move_left_valid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+
+    move = 'e3d3'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+
+def test_king_horizontal_move_invalid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    move = 'b1d2'
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+
+    move = 'e3g3'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Invalid move for piece.'
+    assert captured_piece_location == None
+
+def test_king_diagonal_move_right_up_valid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+
+    move = 'e3f4'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_king_diagonal_move_left_up_valid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+
+    move = 'e3d4'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_king_diagonal_move_right_down_valid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+    game.accept_move('f2f4',None)
+    game.accept_move('h5h4',None)
+
+    move = 'e3f2'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_king_diagonal_move_right_down_valid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+    game.accept_move('f2f4',None)
+    game.accept_move('h5h4',None)
+
+    move = 'e3f2'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_king_diagonal_move_left_down_valid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+    game.accept_move('d2d4',None)
+    game.accept_move('h5h4',None)
+
+    move = 'e3d2'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_king_diagonal_invalid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+    game.accept_move('d2d4',None)
+    game.accept_move('h5h4',None)
+
+    move = 'e3g5'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Invalid move for piece.'
+    assert captured_piece_location == None
+
+def test_king_diagonal_path_invalid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('e1e2',None)
+    game.accept_move('h7h6',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h6h5',None)
+
+    move = 'e3f2'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Wrong color piece at destination position.'
