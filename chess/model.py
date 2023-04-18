@@ -393,12 +393,12 @@ class Game:
         # print(source_piece.type_enum())
         return source_piece.type_enum()
     
-    # def node_list_append(self,board):
+    def node_list_append(self,board):
 
-    #     copy_of_original_board = board.duplicate()
-    #     new_node = Node(copy_of_original_board)
-    #     new_node.prev = self.board_head
-    #     self.board_head = new_node      
+        copy_of_original_board = board.duplicate()
+        new_node = Node(copy_of_original_board)
+        new_node.prev = self.board_head
+        self.board_head = new_node      
 
     def reverse_game_state(self):
         if self.board_head.prev != None:
