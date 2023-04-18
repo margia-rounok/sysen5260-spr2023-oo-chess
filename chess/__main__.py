@@ -34,7 +34,8 @@ while not game.game_over:
         # game.do_backup(move)
         game.reverse_game_state()
         # game.board = board_lst[0]
-        # print(view.board_to_text(game.board))
+        print("hehe")
+        print(view.board_to_text(game.board))
         # break
     else:
         print(message)
