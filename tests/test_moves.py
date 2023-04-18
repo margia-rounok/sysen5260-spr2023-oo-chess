@@ -1,5 +1,5 @@
 # import pytest
-from chess.model_2 import Game, Board, Piece, Pawn, Rook, Knight, Bishop, Queen, King
+from chess.model import Game, Board, Piece, Pawn, Rook, Knight, Bishop, Queen, King
 from chess.rules import Rules 
 
 letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
@@ -395,7 +395,6 @@ def test_castle_king_side_invalid():
 
     move = 'e1g1'
 
-
     # Act
     legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
@@ -403,3 +402,207 @@ def test_castle_king_side_invalid():
     assert legal_move == False
     assert message == 'Invalid move for piece.'
     assert captured_piece_location == None
+
+def test_queen_valid_multiple_vertical_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('h7h5',None)
+
+    move = 'd1d3'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_queen_valid_multiple_horizontal_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('h7h5',None)
+    game.accept_move('d1d3',None)
+    game.accept_move('h5h4',None)
+
+    move = 'd3f3'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_queen_valid_multiple_diagonal_forward_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('h7h5',None)
+    game.accept_move('d1d3',None)
+    game.accept_move('h5h4',None)
+
+    move = 'd3b5'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_queen_valid_multiple_diagonal_backwards_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('h7h5',None)
+    game.accept_move('d1d3',None)
+    game.accept_move('h5h4',None)
+    game.accept_move('d3b5',None)
+    game.accept_move('h4h3',None)
+
+    move = 'b5d3'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_queen_invalid_multiple_verticle_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('h7h5',None)
+
+    move = 'd1d5'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Path is not clear.'
+    assert captured_piece_location == None
+
+def test_queen_invalid_multiple_diagonal_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    move = 'd8f6'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Path is not clear.'
+    assert captured_piece_location == None
+
+def test_queen_invalid_multiple_horizontal_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('h7h5',None)
+    game.accept_move('d1d3',None)
+    game.accept_move('h5h4',None)
+    game.accept_move('e2e3',None)
+    game.accept_move('h4h3',None)
+
+    move = 'd3g3'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Path is not clear.'
+    assert captured_piece_location == None
+
+def test_queen_invalid_multiple_diagonal_moves():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    move = 'd8f6'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Path is not clear.'
+    assert captured_piece_location == None
+
+def test_knight_valid_horizontal():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('h7h5',None)
+    move = 'b1d2'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_knight_valid_horizontal():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    move = 'b1c3'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_knight_valid_horizontal():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('h7h5',None)
+    move = 'b1d2'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
+
+def test_knight_invalid():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    move = 'b1d2'
+
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Wrong color piece at destination position.'
+    assert captured_piece_location == None #bug

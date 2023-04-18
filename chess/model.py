@@ -526,6 +526,7 @@ class Game:
     def make_normal_move(self, source: str, dest: str):
         """Make a normal move."""
         piece = self.board.get(source)
+        # if piece is not None: 
         self.board.set(dest, piece)
         self.board.set(source, None)
         piece.has_moved = True

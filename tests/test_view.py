@@ -1,6 +1,6 @@
-import chess.view_2 as view
+import chess.view as view
 import chess.model as model
-from chess.model_2 import Game 
+from chess.model import Game 
 
 def test_piece_to_char():
     assert '·' == view.piece_to_char(None)
