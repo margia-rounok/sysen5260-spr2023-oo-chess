@@ -15,12 +15,10 @@ class Rules:
         dest = cls.get_dest_pos(move)
         source_piece = board.get(source)
         dest_piece = board.get(dest)
+        captured_piece_location = None
         
 
-        if dest_piece is not None:
-            captured_piece_location = dest
-        else:
-            captured_piece_location = None
+
 
         if cls.check_input(move) is None:
             return (False, 'Enter a valid command.',captured_piece_location)
@@ -35,6 +33,7 @@ class Rules:
         
         # check if dest piece is the same color
         if dest_piece is not None and dest_piece._is_white == white_to_play:
+            captured_piece_location = dest
             return (False, 'Wrong color piece at destination position.',captured_piece_location)
 
         #check that path is clear
