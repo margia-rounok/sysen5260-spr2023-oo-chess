@@ -9,8 +9,6 @@ def test_board_ctor():
 
 # Path: tests\test_model.py
 
-
-
 def test_board_set_and_get():
     board = Board()
     new_pawn = Pawn(is_white=True)

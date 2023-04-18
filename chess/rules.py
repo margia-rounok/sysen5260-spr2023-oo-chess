@@ -119,7 +119,24 @@ class Rules:
                 return True
         game.move_piece(dest, source)
         return False
-
+   
+    @classmethod
+    def check_checkmate(cls, game):
+        board = game.board
+        white_to_play = game.white_to_play
+        if white_to_play:
+            king_pos = board.king_location(is_white=True)
+        else:
+            king_pos = board.king_location(is_white=False)
+        enemy_pieces_loc = board.get_piece_locations(is_white= not white_to_play)
+        for loc in enemy_pieces_loc:
+            enemy_piece = board.get(loc)
+            enemy_movements = enemy_piece.valid_moves(loc)
+            for movement in enemy_movements:
+                if cls.check_king_in_check(loc+movement, game):
+                    return False
+        return True
+        
     @classmethod
     def check_pawn_capture(cls, move, board, white_to_play):
         source = cls.get_source_pos(move)
@@ -223,9 +240,7 @@ class Rules:
                         return True
         return False
 
-    # @classmethod
-    # def check_checkmate(cls, move, board, white_to_play):
-    #     pass
+
 
     # @classmethod
     # def check_stalemate(cls, move, board, white_to_play):
