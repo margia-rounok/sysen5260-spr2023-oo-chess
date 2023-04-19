@@ -71,7 +71,7 @@ class Rules:
             return (False, 'Invalid move for piece.',captured_piece_location)
         
         #check if move puts own king in check
-        if cls.check_king_in_check(move, game):
+        if cls.check_if_move_leaves_own_king_in_check(move, game):
             return (False, 'Move puts own king in check.',captured_piece_location)
         return (True, 'Valid move.', captured_piece_location)
     
@@ -99,7 +99,7 @@ class Rules:
         return True
 
     @classmethod
-    def check_king_in_check(cls, move, game):
+    def check_if_move_leaves_own_king_in_check(cls, move, game):
         board = game.board
         white_to_play = game.white_to_play
 
@@ -121,7 +121,7 @@ class Rules:
         return False
    
     @classmethod
-    def check_checkmate(cls, game):
+    def check_if_king_is_currently_in_check(cls, game):
         board = game.board
         white_to_play = game.white_to_play
         if white_to_play:
@@ -132,8 +132,20 @@ class Rules:
         for loc in enemy_pieces_loc:
             enemy_piece = board.get(loc)
             enemy_movements = enemy_piece.valid_moves(loc)
-            for movement in enemy_movements:
-                if cls.check_king_in_check(loc+movement, game):
+            if king_pos in enemy_movements and cls.check_path_is_clear(loc+king_pos, board):
+                return True
+        return False
+    
+    @classmethod
+    def check_if_king_is_in_checkmate(cls, game):
+        board = game.board
+        white_to_play = game.white_to_play
+        own_piece_locations = board.get_piece_locations(is_white=white_to_play)
+        for loc in own_piece_locations:
+            piece = board.get(loc)
+            valid_moves = piece.valid_moves(loc)
+            for move in valid_moves:
+                if not cls.check_if_move_leaves_own_king_in_check(loc+move, game):
                     return False
         return True
         
