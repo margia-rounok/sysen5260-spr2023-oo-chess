@@ -73,6 +73,10 @@ class Rules:
         #check if move puts own king in check
         if cls.check_if_move_leaves_own_king_in_check(move, game):
             return (False, 'Move puts own king in check.',captured_piece_location)
+        
+        if cls.check_if_king_is_in_checkmate(game):
+            return (True, 'Checkmate!',captured_piece_location)
+        
         return (True, 'Valid move.', captured_piece_location)
     
     @classmethod
