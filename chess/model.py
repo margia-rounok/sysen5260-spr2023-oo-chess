@@ -365,6 +365,7 @@ class Game:
         self.white_to_play = True
         self.game_over = False
         self.move_history = []
+        self.checkmate = False
         # self.head= move_node()
         # self.piece_head= piece_node()
         self.board_head = None

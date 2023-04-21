@@ -176,9 +176,10 @@ class Rules:
                 else:
                     print(test_move)
                     print('is not valid')
- 
-                
-        print('checkmate')
+        print("before " +str(game.checkmate))
+        game.checkmate = True 
+        print("after " +str(game.checkmate))
+        print('rules checkmate')
         return True    
 
 

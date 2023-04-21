@@ -12,10 +12,6 @@ board_lst.insert(0, game.board)
 # print(view.board_to_text(board_lst[0]))
 
 while not game.game_over:
-    # if rules.check_if_king_is_in_checkmate(game):
-    #     print("checkmate")
-    #     game.game_over=True
-    #     break
     print("")
     print("debug old board")
     print(view.board_to_text(game.board))
@@ -36,8 +32,9 @@ while not game.game_over:
         if rules.check_if_king_is_currently_in_check(game):
             print("check")
         if rules.check_if_own_king_is_in_checkmate(game):
-            print("checkmate")
+            print("main checkmate")
             game.game_over=True
+            print(game.checkmate)
             break
 
         

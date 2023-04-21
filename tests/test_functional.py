@@ -20,29 +20,33 @@ def test_fool_mate():
 
     # Assert
     assert legal_move == True
-    assert message == 'Vaild move.'
+    assert message == 'Valid move.'
     assert captured_piece_location == None
 
     game.accept_move(move,None)
+    Rules.check_if_own_king_is_in_checkmate(game)
+    assert game.checkmate == True
 
-# def test_variant():
-#     # Arrange
-#     game = Game()
-#     game.set_up_pieces()
-#     game.accept_move('e2e4',None)
-#     game.accept_move('b8c6',None)
-#     game.accept_move('g2g4',None)
-#     game.accept_move('g2g4',None)
-#     game.accept_move('c6d4',None)
-#     game.accept_move('g1e2',None)
+def test_variant():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('e2e4',None)
+    game.accept_move('b8c6',None)
+    game.accept_move('g2g4',None)
+    game.accept_move('c6d4',None)
+    game.accept_move('g1e2',None)
 
-#     move = 'd4f3' #checkmate
+    move = 'd4f3' #checkmate
 
-#     # Act
-#     legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
 
-#     # Assert
-#     assert legal_move == True
-#     assert message == 'Checkmate!'
-#     assert captured_piece_location == None
+    # Assert
+    assert legal_move == True
+    assert message == 'Valid move.'
+    assert captured_piece_location == None
 
+    game.accept_move(move,None)
+    Rules.check_if_own_king_is_in_checkmate(game)
+    assert game.checkmate == True
