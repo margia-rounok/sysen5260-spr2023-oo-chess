@@ -105,12 +105,12 @@ class Pawn(Piece):
         moves=[]
         if self._is_white:
             moves.append(f'{current_position[0]}{int(current_position[1])+1}')
-            moves.append(f'{chr(ord(current_position[0])+1)}{int(current_position[1])+1}')
+            # moves.append(f'{chr(ord(current_position[0])+1)}{int(current_position[1])+1}')
             if current_position[1] == '2':
                 moves.append(f'{current_position[0]}{int(current_position[1])+2}')
         else:
             moves.append(f'{current_position[0]}{int(current_position[1])-1}')
-            moves.append(f'{chr(ord(current_position[0])-1)}{int(current_position[1])-1}')
+            # moves.append(f'{chr(ord(current_position[0])-1)}{int(current_position[1])-1}')
             if current_position[1] == '7':
                 moves.append(f'{current_position[0]}{int(current_position[1])-2}')
         valid_moves = self.discard_invalid_moves(moves)
@@ -282,6 +282,7 @@ class Queen(Piece):
             moves.append(f'{chr(ord(current_position[0])-i)}{current_position[1]}')
         for i in range(1,9):
             moves.append(f'{current_position[0]}{int(current_position[1])-i}')  
+        
             
         valid_moves = self.discard_invalid_moves(moves)
         return valid_moves
@@ -368,14 +369,6 @@ class Game:
         # self.piece_head= piece_node()
         self.board_head = None
     
-    def duplicate(self):
-        new_game = Game()
-        new_game.board = self.board.duplicate()
-        new_game.white_to_play = self.white_to_play
-        new_game.game_over = self.game_over
-        new_game.move_history = self.move_history.copy()
-        return new_game
-
     def get_board(self) -> Board:
         return self.board
     def get_white_to_play(self) -> bool:
@@ -421,6 +414,7 @@ class Game:
         """Move piece from source to destination.
         Assumes move is valid.
         """
+        piece = self.board.get(source)
         # Check if move is a castle move
         if self.is_castle_move(source, dest):
             self.castle(source, dest)
@@ -438,6 +432,9 @@ class Game:
             self.make_normal_move(source, dest)       
         self.move_history.append((source, dest))
         self.reset_pawn_just_moved_two()
+        if(piece.type_enum==1 and abs(int(dest[1])-int(source[1]))==2):	
+            piece.just_moved_two_squares=True
+        
 
     def make_normal_move(self, source: str, dest: str):
         """Make a normal move."""

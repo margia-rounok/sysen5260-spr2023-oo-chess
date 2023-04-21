@@ -68,8 +68,6 @@ class Rules:
         if dest not in valid_moves:
             return (False, 'Invalid move for piece.',captured_piece_location)
         
-        # if cls.check_dest_piece_is_not_king(move, board) is False:
-        #     return (False, 'Cannot actually capture King.',captured_piece_location)
         #check if move puts own king in check
         if cls.check_if_move_leaves_own_king_in_check(move, game):
             return (False, 'Move puts own king in check.',captured_piece_location)
