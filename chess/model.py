@@ -409,7 +409,6 @@ class Game:
     def board_display(self):
         print(f"Board now: {self.board}")
 
-
     def move_piece(self, source: str, dest: str):
         """Move piece from source to destination.
         Assumes move is valid.

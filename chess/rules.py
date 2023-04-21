@@ -45,6 +45,9 @@ class Rules:
         # get valid moves for source piece
         valid_moves = source_piece.valid_moves(source)
 
+        if(source_piece.type_enum==1 and cls.check_pawn_is_capturing_forward(move,board,white_to_play)):
+            return (False, 'Pawns cant capture forward.',captured_piece_location)
+
         #check if move is a pawn special case
         if(source_piece.type_enum ==1 and cls.check_pawn_capture(move, board, white_to_play)):
             #add pawn special cases to valid moves if conditions hold
@@ -86,6 +89,21 @@ class Rules:
         return False
 
     @classmethod
+    def check_pawn_is_capturing_forward(cls,move,board,white_to_play):
+        source =cls.get_source_pos(move)
+        dest = cls.get_dest_pos(move)
+        dest_piece = board.get(dest)
+
+        diagonal_move_boolean = abs(cls.horizontal_difference(source,dest)) == 1 and abs(cls.vertical_difference(source,dest)) == 1
+        forward_movement_boolean = cls.vertical_difference(source,dest) > 0 if white_to_play else cls.vertical_difference(source,dest) < 0
+        print('Dest piece in pawn check')
+        print(dest_piece)
+        if(forward_movement_boolean and diagonal_move_boolean is False and dest_piece is not None):
+            return True
+        else:
+            return False
+
+    @classmethod
     def check_path_is_clear(cls,move,board):
         source = cls.get_source_pos(move)
         dest = cls.get_dest_pos(move)
@@ -123,8 +141,8 @@ class Rules:
         for loc in enemy_pieces_loc:
             enemy_piece = board.get(loc)
             enemy_movements = enemy_piece.valid_moves(loc)
-            if(enemy_piece.type_enum == 5):
-                print('Queen moves')
+            if(enemy_piece.type_enum == 1):
+                print('Pawn moves')
 
                 print(enemy_movements)
                 print('King pos')
@@ -158,10 +176,7 @@ class Rules:
                 else:
                     print(test_move)
                     print('is not valid')
-                    # if cls.check_if_move_leaves_own_king_in_check(loc+move, game) is False:
-                    #     print(loc+move)
-                    #     print('not checkmate')
-                    #     return False
+ 
                 
         print('checkmate')
         return True    
