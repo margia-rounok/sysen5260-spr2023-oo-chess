@@ -24,6 +24,9 @@ while not game.game_over:
             game.game_over=True
             print(game.checkmate)
             break
+    elif move == 'resign':
+        game.resign_move()
+        break
     elif move == 'backup':
         game.reverse_game_state()
         print(view.board_to_text(game.board))

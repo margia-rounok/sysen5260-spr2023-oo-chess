@@ -36,12 +36,12 @@ As a player...
 also moved to complete a castle. (done)</strike>
 * <strike>I want to receive an error if any of the castling conditions don't hold. </strike>
 * <strike>I want to enter 'backup' and undo a move. (done) </strike>
-* I want the game to complete when either player is checkmated.
+* <strike> I want the game to complete when either player is checkmated. (done) </strike>
 
 
 # What you'll hand in
 * A link to your homework group's github repository that will contain:
-   * A working chess program.
+   * <strike> A working chess program. </strike>
    * <strike>A DESIGN.md file that explains the design of your system to a 
    developer wishing to use or extend your system. (done) </strike>
    * <strike> A RETROSPECTIVE.md file summarizing the agile retrospective meeting 
@@ -75,5 +75,5 @@ Extra Credit:
 * Set up the GitHub Actions to enable Continuous Integration for your homework group.
 * Use Python's [Abstract Base Class](https://docs.python.org/3/library/abc.html) 
 module where appropriate.
-* Implement another story: I want to enter 'resign' to resign and end the game.
+* <strike> Implement another story: I want to enter 'resign' to resign and end the game. </strike>
 

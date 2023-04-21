@@ -518,7 +518,8 @@ class Game:
         self.white_to_play = not self.white_to_play
         self.move_history.append(move)
 
-
+    def resign_move(self):
+        self.game_over=True
 
     def set_up_pieces(self):
         """Place pieces on the board as per the initial setup."""
@@ -553,6 +554,3 @@ class Game:
 
         self.board_head = Node(self.board.duplicate())
         
-
-
-
