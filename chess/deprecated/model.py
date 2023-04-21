@@ -398,6 +398,78 @@ class Game:
         return source_piece is None or \
         source_piece._is_white == self.white_to_play #valid iff they differ, did not move op
     
+    # def update_board_pointer(self):
+    #     cur_node = self.board_head
+    #     while cur_node.next != None:
+    #         cur_node = cur_node.next
+    #     self.board = cur_node.board
+
+    # def do_backup(self): 
+    #     self.pop_list()
+    #     move_list = self.display()
+    #     piece_list = self.display_piece_list()
+    #     piece_list_length = len(piece_list)
+    #     move_list_length = len(move_list)
+    #     if move_list_length == 0:
+    #         print("Must Make a move first!")
+    #     else:
+    #         self.white_to_play = not self.white_to_play
+    #         prev_move = move_list[move_list_length-1]
+    #         prev_piece = piece_list[piece_list_length-1]
+    #         dest = self.get_source_pos(prev_move)
+    #         source = self.get_dest_pos(prev_move)
+    #         # Need to check if piece was captured, if true respawn piece
+    #         dest_piece = self.get_dest_piece(source)
+    #         self.board.set(source, prev_piece)
+    #         self.board.set(dest, dest_piece)
+    #         self.pop_list()
+    #     #print("this will backup move")
+
+
+    # def move_list_append(self, move):
+    #     new_move_node = move_node(move)
+    #     dest = self.get_dest_pos(move)
+    #     dest_piece = self.get_dest_piece(dest)
+    #     has_moved = dest_piece.has_moved
+    #     new_piece_node = piece_node(self.get_dest_piece(dest),has_moved = has_moved)
+    #     cur_move = self.head
+    #     cur_piece = self.piece_head
+    #     while cur_move.next != None:
+    #         cur_move = cur_move.next
+    #         cur_piece = cur_piece.next
+    #     cur_move.next = new_move_node
+    #     cur_piece.next = new_piece_node
+
+    # def pop_list(self):
+    #     cur_move_node = self.head
+    #     cur_piece_node = self.piece_head
+    #     while cur_move_node.next:
+    #         if cur_move_node.next.next == None:
+    #             cur_piece_node.piece.has_moved = cur_piece_node.ne
+    #             cur_move_node.next = None
+    #             cur_piece_node.next = None
+    #         else:
+    #             cur_move_node = cur_move_node.next
+    #             cur_piece_node = cur_piece_node.next
+    #     return cur_move_node, cur_piece_node
+    
+    # def display(self):
+    #     elems = []
+    #     cur_node = self.head
+    #     while cur_node.next != None:
+    #         cur_node = cur_node.next
+    #         elems.append(cur_node.move)
+    #     return elems
+    
+   
+    # def display_piece_list(self):
+    #     elems = []
+    #     cur_node = self.piece_head
+    #     while cur_node.next != None:
+    #         cur_node = cur_node.next
+    #         elems.append(cur_node.piece)
+    #     print("piece elems: ", elems)
+    #     return elems
     # def check_move_exist(self, move):
     #     source = move[0:2]
     #     source_piece = self.board.get(source)
