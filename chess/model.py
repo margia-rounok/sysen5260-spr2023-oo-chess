@@ -1,6 +1,7 @@
 """Chess Game model."""
 from typing import Optional
 
+
 class Board:
     def __init__(self):
         self._squares = dict()
@@ -74,8 +75,8 @@ class Piece:
     def remove_source_and_dest_from_path(self, path: list[str], source: str, dest: str) -> list[str]:
         if(source in path):
             path.remove(source)
-        if(dest in path):
-            path.remove(dest)
+        # if(dest in path):
+        #     path.remove(dest)
         return path
 
 class Pawn(Piece):
@@ -277,6 +278,11 @@ class Queen(Piece):
             moves.append(f'{chr(ord(current_position[0])-i)}{int(current_position[1])+i}')
         for i in range(1,9):
             moves.append(f'{chr(ord(current_position[0])-i)}{int(current_position[1])-i}')
+        for i in range(1,9):
+            moves.append(f'{chr(ord(current_position[0])-i)}{current_position[1]}')
+        for i in range(1,9):
+            moves.append(f'{current_position[0]}{int(current_position[1])-i}')  
+            
         valid_moves = self.discard_invalid_moves(moves)
         return valid_moves
     
@@ -345,15 +351,6 @@ class King(Piece):
         path=[]
         return path
 
-# class move_node:
-#     def __init__(self, move=None):
-#         self.move = move
-#         self.next = None
-
-# class piece_node:
-#     def __init__(self, piece=None):
-#         self.piece = piece
-#         self.next = None
 
 class Node:
     def __init__(self,board=None):
@@ -371,6 +368,14 @@ class Game:
         # self.piece_head= piece_node()
         self.board_head = None
     
+    def duplicate(self):
+        new_game = Game()
+        new_game.board = self.board.duplicate()
+        new_game.white_to_play = self.white_to_play
+        new_game.game_over = self.game_over
+        new_game.move_history = self.move_history.copy()
+        return new_game
+
     def get_board(self) -> Board:
         return self.board
     def get_white_to_play(self) -> bool:
@@ -406,101 +411,16 @@ class Game:
             self.board = self.board_head.board
             self.white_to_play = not self.white_to_play
             self.move_history.pop()
-            self.game_over = False
-
-    # def print_e2_has_moved(self):
-    #     print("e2 has moved:", self.board.get("e2").has_moved)
-
-    # def linked_list_length(self):
-    #     cur_node = self.board_head
-    #     total = 0
-    #     while cur_node != None:
-    #         total += 1
-    #         cur_node = cur_node.next
-    #     print(f"Linked List Length: {total}")
-    #     return total        
+            self.game_over = False    
         
     def board_display(self):
         print(f"Board now: {self.board}")
 
-    # def update_board_pointer(self):
-    #     cur_node = self.board_head
-    #     while cur_node.next != None:
-    #         cur_node = cur_node.next
-    #     self.board = cur_node.board
 
-    # def do_backup(self): 
-    #     self.pop_list()
-    #     move_list = self.display()
-    #     piece_list = self.display_piece_list()
-    #     piece_list_length = len(piece_list)
-    #     move_list_length = len(move_list)
-    #     if move_list_length == 0:
-    #         print("Must Make a move first!")
-    #     else:
-    #         self.white_to_play = not self.white_to_play
-    #         prev_move = move_list[move_list_length-1]
-    #         prev_piece = piece_list[piece_list_length-1]
-    #         dest = self.get_source_pos(prev_move)
-    #         source = self.get_dest_pos(prev_move)
-    #         # Need to check if piece was captured, if true respawn piece
-    #         dest_piece = self.get_dest_piece(source)
-    #         self.board.set(source, prev_piece)
-    #         self.board.set(dest, dest_piece)
-    #         self.pop_list()
-    #     #print("this will backup move")
-
-
-    # def move_list_append(self, move):
-    #     new_move_node = move_node(move)
-    #     dest = self.get_dest_pos(move)
-    #     dest_piece = self.get_dest_piece(dest)
-    #     has_moved = dest_piece.has_moved
-    #     new_piece_node = piece_node(self.get_dest_piece(dest),has_moved = has_moved)
-    #     cur_move = self.head
-    #     cur_piece = self.piece_head
-    #     while cur_move.next != None:
-    #         cur_move = cur_move.next
-    #         cur_piece = cur_piece.next
-    #     cur_move.next = new_move_node
-    #     cur_piece.next = new_piece_node
-
-    # def pop_list(self):
-    #     cur_move_node = self.head
-    #     cur_piece_node = self.piece_head
-    #     while cur_move_node.next:
-    #         if cur_move_node.next.next == None:
-    #             cur_piece_node.piece.has_moved = cur_piece_node.ne
-    #             cur_move_node.next = None
-    #             cur_piece_node.next = None
-    #         else:
-    #             cur_move_node = cur_move_node.next
-    #             cur_piece_node = cur_piece_node.next
-    #     return cur_move_node, cur_piece_node
-    
-    # def display(self):
-    #     elems = []
-    #     cur_node = self.head
-    #     while cur_node.next != None:
-    #         cur_node = cur_node.next
-    #         elems.append(cur_node.move)
-    #     return elems
-    
-   
-    # def display_piece_list(self):
-    #     elems = []
-    #     cur_node = self.piece_head
-    #     while cur_node.next != None:
-    #         cur_node = cur_node.next
-    #         elems.append(cur_node.piece)
-    #     print("piece elems: ", elems)
-    #     return elems
-    
     def move_piece(self, source: str, dest: str):
         """Move piece from source to destination.
         Assumes move is valid.
         """
-        piece = self.board.get(source)
         # Check if move is a castle move
         if self.is_castle_move(source, dest):
             self.castle(source, dest)
@@ -515,13 +435,9 @@ class Game:
 
         # Make normal move    
         else:
-            self.make_normal_move(source, dest)
-
-        
+            self.make_normal_move(source, dest)       
         self.move_history.append((source, dest))
         self.reset_pawn_just_moved_two()
-        if(piece.type_enum==1 and abs(int(dest[1])-int(source[1]))==2):
-            piece.just_moved_two_squares=True
 
     def make_normal_move(self, source: str, dest: str):
         """Make a normal move."""
@@ -622,6 +538,8 @@ class Game:
         self.move_piece(source, dest)
         self.white_to_play = not self.white_to_play
         self.move_history.append(move)
+
+
 
     def set_up_pieces(self):
         """Place pieces on the board as per the initial setup."""

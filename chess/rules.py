@@ -44,8 +44,6 @@ class Rules:
 
         # get valid moves for source piece
         valid_moves = source_piece.valid_moves(source)
-        print('in rules')
-        print(valid_moves)
 
         #check if move is a pawn special case
         if(source_piece.type_enum ==1 and cls.check_pawn_capture(move, board, white_to_play)):
@@ -70,13 +68,12 @@ class Rules:
         if dest not in valid_moves:
             return (False, 'Invalid move for piece.',captured_piece_location)
         
+        # if cls.check_dest_piece_is_not_king(move, board) is False:
+        #     return (False, 'Cannot actually capture King.',captured_piece_location)
         #check if move puts own king in check
         if cls.check_if_move_leaves_own_king_in_check(move, game):
             return (False, 'Move puts own king in check.',captured_piece_location)
-        
-        if cls.check_if_king_is_in_checkmate(game):
-            return (True, 'Checkmate!',captured_piece_location)
-        
+                
         return (True, 'Valid move.', captured_piece_location)
     
     @classmethod
@@ -98,17 +95,27 @@ class Rules:
         if(source_piece is not None and source_piece.type_enum!= 3):
             path = source_piece.get_path(source,dest)
             for square in path:
-                if board.get(square) is not None:
+                if board.get(square) is not None and square != dest:
                     return False
         return True
 
+    
+    @classmethod
+    def check_dest_piece_is_not_king(cls,move,board):
+        dest = cls.get_dest_pos(move)
+        dest_piece = board.get(dest)
+        if(dest_piece is not None and dest_piece.type_enum == 6):
+            return False
+        return True
+    
     @classmethod
     def check_if_move_leaves_own_king_in_check(cls, move, game):
         board = game.board
         white_to_play = game.white_to_play
-
         source = cls.get_source_pos(move)
         dest = cls.get_dest_pos(move)
+        dest_piece = board.get(dest)
+
         game.move_piece(source, dest)
         if white_to_play:
             king_pos = board.king_location(is_white=True)
@@ -118,12 +125,50 @@ class Rules:
         for loc in enemy_pieces_loc:
             enemy_piece = board.get(loc)
             enemy_movements = enemy_piece.valid_moves(loc)
+            if(enemy_piece.type_enum == 5):
+                print('Queen moves')
+
+                print(enemy_movements)
+                print('King pos')
+                print(king_pos)
             if king_pos in enemy_movements and cls.check_path_is_clear(loc+king_pos, board):
+                print('King is in check!')
+                print(loc+king_pos)
                 game.move_piece(dest, source)
+                board.set(dest, dest_piece)
                 return True
         game.move_piece(dest, source)
+        board.set(dest, dest_piece)
         return False
-   
+
+    
+    @classmethod
+    def check_if_own_king_is_in_checkmate(cls, game):
+        board = game.board
+        white_to_play = game.white_to_play
+
+        own_pieces_loc = board.get_piece_locations(is_white= white_to_play)
+        for loc in own_pieces_loc:
+            own_piece = board.get(loc)
+            own_movements = own_piece.valid_moves(loc)
+            for move in own_movements:
+                test_move = loc+move
+                if cls.validate_move(test_move, game)[0] is True:
+                    print(test_move)
+                    print('is valid')
+                    return False
+                else:
+                    print(test_move)
+                    print('is not valid')
+                    # if cls.check_if_move_leaves_own_king_in_check(loc+move, game) is False:
+                    #     print(loc+move)
+                    #     print('not checkmate')
+                    #     return False
+                
+        print('checkmate')
+        return True    
+
+
     @classmethod
     def check_if_king_is_currently_in_check(cls, game):
         board = game.board
@@ -139,20 +184,7 @@ class Rules:
             if king_pos in enemy_movements and cls.check_path_is_clear(loc+king_pos, board):
                 return True
         return False
-    
-    @classmethod
-    def check_if_king_is_in_checkmate(cls, game):
-        board = game.board
-        white_to_play = game.white_to_play
-        own_piece_locations = board.get_piece_locations(is_white=white_to_play)
-        for loc in own_piece_locations:
-            piece = board.get(loc)
-            valid_moves = piece.valid_moves(loc)
-            for move in valid_moves:
-                if not cls.check_if_move_leaves_own_king_in_check(loc+move, game):
-                    return False
-        return True
-        
+            
     @classmethod
     def check_pawn_capture(cls, move, board, white_to_play):
         source = cls.get_source_pos(move)
@@ -234,7 +266,7 @@ class Rules:
         source = cls.get_source_pos(move)
         dest = cls.get_dest_pos(move)
         source_piece = board.get(source)
-        dest_piece = board.get(dest)
+        
         if source_piece is not None and source_piece.type_enum == 6:
             if white_to_play:
                 if source == 'e1' and dest == 'g1' and source_piece._is_white and source_piece.has_moved is False:

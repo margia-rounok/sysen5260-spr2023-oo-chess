@@ -352,6 +352,15 @@ class King(Piece):
     def get_path(self, source: str, dest: str) -> list:
         moves = []
         return moves.append(dest) #king moves one spot 
+# class move_node:
+#     def __init__(self, move=None):
+#         self.move = move
+#         self.next = None
+
+# class piece_node:
+#     def __init__(self, piece=None):
+#         self.piece = piece
+#         self.next = None
 
 class Game:
     def __init__(self):
