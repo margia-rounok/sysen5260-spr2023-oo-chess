@@ -42,8 +42,11 @@ also moved to complete a castle. (done)</strike>
 # What you'll hand in
 * A link to your homework group's github repository that will contain:
    * A working chess program.
-   * <strike>A DESIGN.md file that explains the design of your system to a developer wishing to use or extend your system. (done) </strike>
-   * <strike> A RETROSPECTIVE.md file summarizing the agile retrospective meeting you'll hold after you complete the work for this assignment. (Nuclino has a decent description of Agile Retrospectives [here](https://www.nuclino.com/articles/sprint-retrospective-meeting)) (done) </strike>
+   * <strike>A DESIGN.md file that explains the design of your system to a 
+   developer wishing to use or extend your system. (done) </strike>
+   * <strike> A RETROSPECTIVE.md file summarizing the agile retrospective meeting 
+   you'll hold after you complete the work for this assignment. (Nuclino has a 
+   decent description of Agile Retrospectives [here](https://www.nuclino.com/articles/sprint-retrospective-meeting)) (done) </strike>
 
 # How you'll get an A
 * <strike> I can clone your repository, start the container, run `python -m chess`, and complete several moves in an interactive session. (done)</strike>
@@ -70,6 +73,7 @@ descriptive prose, etc. (done) </strike>
 
 Extra Credit:
 * Set up the GitHub Actions to enable Continuous Integration for your homework group.
-* Use Python's [Abstract Base Class](https://docs.python.org/3/library/abc.html) module where appropriate.
+* Use Python's [Abstract Base Class](https://docs.python.org/3/library/abc.html) 
+module where appropriate.
 * Implement another story: I want to enter 'resign' to resign and end the game.
 
