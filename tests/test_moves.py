@@ -847,3 +847,22 @@ def test_king_diagonal_path_invalid():
     # Assert
     assert legal_move == False
     assert message == 'Wrong color piece at destination position.'
+
+
+def test_invalid_move_king_does_not_check():
+    # Arrange
+    game = Game()
+    game.set_up_pieces()
+    game.accept_move('d2d4',None)
+    game.accept_move('e7e5',None)
+    game.accept_move('b1c3',None)
+    game.accept_move('f8b4',None)
+
+    move = 'c3d5'
+    # Act
+    legal_move, message, captured_piece_location = Rules.validate_move(move, game)
+
+    # Assert
+    assert legal_move == False
+    assert message == 'Move puts own king in check.'
+    assert captured_piece_location == None
