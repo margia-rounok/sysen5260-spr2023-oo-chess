@@ -34,8 +34,6 @@ class Board:
         new_board = Board()
         for location, piece in self._squares.items():
             new_board.set(location, piece.duplicate() if piece is not None else None)
-        print('duplicating board')
-        print('new_board', new_board)
         return new_board
 
 class Piece:
@@ -75,8 +73,6 @@ class Piece:
     def remove_source_and_dest_from_path(self, path: list[str], source: str, dest: str) -> list[str]:
         if(source in path):
             path.remove(source)
-        # if(dest in path):
-        #     path.remove(dest)
         return path
 
 class Pawn(Piece):
@@ -92,12 +88,6 @@ class Pawn(Piece):
         new_pawn = Pawn(self._is_white)
         new_pawn.has_moved = self.has_moved == True
         new_pawn.just_moved_two_squares = self.just_moved_two_squares == True
-        # print('duplicating pawn')
-
-        # print('old_pawn', self)
-        # print('self.has_moved', self.has_moved)
-        # print('new_pawn', new_pawn)
-        # print('new_pawn.has_moved', new_pawn.has_moved)
         return new_pawn
     
     def valid_moves(self, current_position: str) -> list[str]:
@@ -105,12 +95,10 @@ class Pawn(Piece):
         moves=[]
         if self._is_white:
             moves.append(f'{current_position[0]}{int(current_position[1])+1}')
-            # moves.append(f'{chr(ord(current_position[0])+1)}{int(current_position[1])+1}')
             if current_position[1] == '2':
                 moves.append(f'{current_position[0]}{int(current_position[1])+2}')
         else:
             moves.append(f'{current_position[0]}{int(current_position[1])-1}')
-            # moves.append(f'{chr(ord(current_position[0])-1)}{int(current_position[1])-1}')
             if current_position[1] == '7':
                 moves.append(f'{current_position[0]}{int(current_position[1])-2}')
         valid_moves = self.discard_invalid_moves(moves)
@@ -366,8 +354,6 @@ class Game:
         self.game_over = False
         self.move_history = []
         self.checkmate = False
-        # self.head= move_node()
-        # self.piece_head= piece_node()
         self.board_head = None
     
     def get_board(self) -> Board:
@@ -387,9 +373,7 @@ class Game:
     
     def get_source_type(self, move:str):
         source_pos = self.get_source_pos(move)
-        # print(source_pos)
         source_piece = self.get_source_piece(source_pos)
-        # print(source_piece.type_enum())
         return source_piece.type_enum()
     
     def node_list_append(self,board):
@@ -439,7 +423,6 @@ class Game:
     def make_normal_move(self, source: str, dest: str):
         """Make a normal move."""
         piece = self.board.get(source)
-        # if piece is not None: 
         self.board.set(dest, piece)
         self.board.set(source, None)
         piece.has_moved = True
@@ -527,7 +510,6 @@ class Game:
             self.board.set('g8', King(is_white=False))
 
     def accept_move(self, move, captured_piece_location):
-        # TODO: Implement updating the board with the give move
         source = move[0:2]
         dest = move[2:]
         if(captured_piece_location is not None):

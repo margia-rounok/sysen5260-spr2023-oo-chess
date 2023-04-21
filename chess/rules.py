@@ -96,8 +96,6 @@ class Rules:
 
         diagonal_move_boolean = abs(cls.horizontal_difference(source,dest)) == 1 and abs(cls.vertical_difference(source,dest)) == 1
         forward_movement_boolean = cls.vertical_difference(source,dest) > 0 if white_to_play else cls.vertical_difference(source,dest) < 0
-        print('Dest piece in pawn check')
-        print(dest_piece)
         if(forward_movement_boolean and diagonal_move_boolean is False and dest_piece is not None):
             return True
         else:
@@ -141,15 +139,7 @@ class Rules:
         for loc in enemy_pieces_loc:
             enemy_piece = board.get(loc)
             enemy_movements = enemy_piece.valid_moves(loc)
-            if(enemy_piece.type_enum == 1):
-                print('Pawn moves')
-
-                print(enemy_movements)
-                print('King pos')
-                print(king_pos)
             if king_pos in enemy_movements and cls.check_path_is_clear(loc+king_pos, board):
-                print('King is in check!')
-                print(loc+king_pos)
                 game.move_piece(dest, source)
                 board.set(dest, dest_piece)
                 return True
@@ -170,16 +160,8 @@ class Rules:
             for move in own_movements:
                 test_move = loc+move
                 if cls.validate_move(test_move, game)[0] is True:
-                    print(test_move)
-                    print('is valid')
                     return False
-                else:
-                    print(test_move)
-                    print('is not valid')
-        print("before " +str(game.checkmate))
         game.checkmate = True 
-        print("after " +str(game.checkmate))
-        print('rules checkmate')
         return True    
 
 
@@ -301,20 +283,3 @@ class Rules:
                     if board.get('b8') is None and board.get('c8') is None and board.get('d8') is None:
                         return True
         return False
-
-
-
-    # @classmethod
-    # def check_stalemate(cls, move, board, white_to_play):
-    #     pass
-
-    # @classmethod
-    # def check_promotion(cls, move, board, white_to_play):
-    #     pass
-    # @classmethod
-    # def check_draw(cls, move, board, white_to_play):
-    #     pass
-
-    # @classmethod
-    # def check_insufficient_material(cls, move, board, white_to_play):
-    #     pass
