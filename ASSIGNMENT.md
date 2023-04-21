@@ -50,7 +50,7 @@ also moved to complete a castle. (done)</strike>
 
 # How you'll get an A
 * <strike> I can clone your repository, start the container, run `python -m chess`, and complete several moves in an interactive session. (done)</strike>
-* You have written functional tests to exercise each of the user-stories outlined above.
+* <strike> You have written unit and functional tests to exercise each of the user-stories outlined above. </strike>
 * <strike> Your code is readable: Meaningful names, comments where apropriate, keep modules, classes, and functions small, etc.
 * Your code is well organized and demonstrates good use of object oriented design principles like:
     * Separation of Concerns / Single responsibility principle.
