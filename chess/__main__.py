@@ -21,6 +21,12 @@ while not game.game_over:
     # game.move_list_append(move)
     board_lst.insert(0, game.board)
     # print(view.board_to_text(board_lst[0]))
+    if rules.check_if_king_is_in_checkmate(game):
+        print("checkmate")
+        break
+    if rules.check_if_king_is_currently_in_check(game):
+    
+        print("check")
     if legal_move:
         #game.move_list_append(move)
         print("appended to node list")
